@@ -63,6 +63,10 @@
 
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    /* The header is sticky, so an anchored section must clear it or it lands
+       underneath. Every scroll target carries the offset. */
+    section[id], main[id], div[id="problem"] { scroll-margin-top: 84px; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
     body {
       margin: 0;
@@ -615,6 +619,34 @@
       transition: border-color 150ms ease-out, color 150ms ease-out;
     }
     .q-opt:hover { border-color: var(--accent-edge); color: var(--accent); }
+    .q-opt { cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
+    .q-opt.picked {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    /* Answering stops the countdown: the bar freezes where it stood. */
+    .q-card.answered .q-bar { animation-play-state: paused; }
+    .q-answered {
+      display: none;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--green);
+    }
+    .q-card.answered .q-answered { display: block; }
+    .q-card.answered .q-options { opacity: .55; pointer-events: none; }
+
+    /* Jump feedback: the row flashes and the button confirms. */
+    .row.jumped { background: var(--accent-dim); }
+    .jump { cursor: pointer; }
+    .jump.hit { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+    /* A sent reply becomes a line in the conversation. */
+    .reply input { cursor: text; }
+    .reply button { cursor: pointer; }
+    .c-card p.sent-line { animation: sentIn .22s ease-out; }
+    @keyframes sentIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
     .q-opt.free { color: var(--faint); }
     .q-count {
       margin-top: 11px;
@@ -1278,6 +1310,7 @@
                         <button class="q-opt" data-testid="q-opt-2">Mark test flaky</button>
                         <button class="q-opt free" data-testid="q-opt-3">Something else…</button>
                       </div>
+                      <div class="q-answered" data-testid="question-answered"></div>
                       <div class="q-count" aria-hidden="true"><i class="q-bar"></i></div>
                     </div>
                   </div>
@@ -1361,7 +1394,7 @@
             <button class="pdot" data-goto="3" aria-label="Show state: jump to a terminal tab" data-testid="panel-dot-3"></button>
             <button class="pdot" data-goto="4" aria-label="Show state: expand and reply inline" data-testid="panel-dot-4"></button>
           </div>
-          <p class="panel-caption">live demo · cycles every ~4s · click a dot to hold a state</p>
+          <p class="panel-caption">live demo · try it — pick an answer, jump a row, or type a reply</p>
         </div>
         <!-- ====================== end live panel ====================== -->
       </div>
@@ -1614,6 +1647,11 @@
         }
       });
 
+      // In-page anchors are left to the browser: a native hash jump always works,
+      // including with JS disabled, and `scroll-margin-top` on every target keeps
+      // the section clear of the sticky header. Intercepting this with
+      // window.scrollTo only adds a way for it to break.
+
       // copy buttons
       document.querySelectorAll('.copy-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -1665,12 +1703,101 @@
         clearInterval(timer);
         timer = setInterval(function () { go(state % 4 + 1); }, 3600);
       }
+      // Any interaction inside the panel stops the carousel. The page promises a
+      // countdown that never times out under you; the demo must not shift under
+      // you either. A visitor who is clicking has chosen their own pace.
+      var held = false;
+      function hold() {
+        if (held) return;
+        held = true;
+        clearInterval(timer);
+        var note = document.querySelector('.panel-caption');
+        if (note) note.textContent = 'paused — you are driving · click a dot to change state';
+      }
+      // Hovering counts too. Without it the first click is spent stopping the
+      // carousel rather than pressing what the visitor aimed at: between reading
+      // a control and reaching it, the state had already changed underneath.
+      panel.addEventListener('pointerenter', hold);
+      panel.addEventListener('pointerdown', hold);
+      panel.addEventListener('focusin', hold);
+      panel.addEventListener('keydown', hold);
+
+      // A dot is a request to SEE that state, so it holds there. Re-scheduling
+      // meant the state the visitor just chose was replaced 3.6s later.
       dots.forEach(function (d) {
         d.addEventListener('click', function () {
+          hold();
           go(Number(d.getAttribute('data-goto')));
-          schedule();
         });
       });
+
+      // ---- the demo is a demo: make every control in it actually respond ----
+      // Nothing below talks to a server. It moves the same panel a real session
+      // would move, so a visitor can try the product rather than watch it.
+
+
+      // Question options: pick one, the choice sticks and the countdown stops.
+      var qcard = panel.querySelector('.q-card');
+      if (qcard) {
+        var opts = Array.prototype.slice.call(qcard.querySelectorAll('.q-opt'));
+        var answered = qcard.querySelector('.q-answered');
+        opts.forEach(function (o) {
+          o.addEventListener('click', function () {
+            opts.forEach(function (x) { x.classList.remove('picked'); });
+            o.classList.add('picked');
+            qcard.classList.add('answered');
+            if (answered) {
+              answered.textContent = 'sent · "' + o.textContent.trim() + '" — the turn goes back to the agent';
+            }
+          });
+        });
+      }
+
+      // Jump buttons: confirm the click landed, and say which tab it reached.
+      Array.prototype.slice.call(panel.querySelectorAll('.jump')).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var row = b.closest('.row');
+          var label = (b.getAttribute('aria-label') || '').replace('Jump to ', '').replace(' terminal tab', '');
+          b.classList.add('hit');
+          if (row) row.classList.add('jumped');
+          var note = document.querySelector('.panel-caption');
+          var prev = note ? note.textContent : '';
+          if (note) note.textContent = 'focused ' + label + ' in its terminal tab';
+          setTimeout(function () {
+            b.classList.remove('hit');
+            if (row) row.classList.remove('jumped');
+            if (note) note.textContent = prev;
+          }, 1500);
+        });
+      });
+
+      // Reply field: Send (or Enter) appends the line to the conversation, the
+      // way the real composer does. Empty input does nothing.
+      var replyInput = panel.querySelector('.reply input');
+      var replySend = panel.querySelector('.reply button');
+      var convo = panel.querySelector('.c-card');
+      function send() {
+        if (!replyInput) return;
+        var v = replyInput.value.trim();
+        if (!v) { replyInput.focus(); return; }
+        if (convo) {
+          var line = document.createElement('p');
+          line.className = 'sent-line';
+          line.innerHTML = '<b class="who-you">YOU</b> ' + v.replace(/[<>&]/g, function (c) {
+            return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c];
+          });
+          var reply = panel.querySelector('.reply');
+          convo.insertBefore(line, reply);
+        }
+        replyInput.value = '';
+        replyInput.focus();
+      }
+      if (replySend) replySend.addEventListener('click', send);
+      if (replyInput) {
+        replyInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); send(); }
+        });
+      }
 
       if (reduced) {
         go(2); // static: the question state, the product's best feature
