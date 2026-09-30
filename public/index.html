@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent Island</title>
+<meta name="description" content="Every coding agent you run, in the notch you already have. Claude Code, Codex and Cursor in one panel — jump to the exact terminal tab, approve and answer without leaving it.">
+<meta property="og:title" content="Agent Island">
+<meta property="og:description" content="Every coding agent you run, in the notch you already have.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#070b16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b16'/%3E%3Cg fill='%2338bdf8'%3E%3Crect x='7' y='17' width='2.6' height='8' rx='1'/%3E%3Crect x='11' y='13' width='2.6' height='12' rx='1'/%3E%3Crect x='15' y='9' width='2.6' height='16' rx='1'/%3E%3Crect x='19' y='14' width='2.6' height='11' rx='1'/%3E%3Crect x='23' y='19' width='2.6' height='6' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: single column on a deep blue-black ground; one ambient glow behind the hero,
+   then tight product sections. Committed dark — the product itself is a dark notch panel. */
+:root{
+  --ground:#070b16;
+  --raise:#0d1424;
+  --raise-2:#111a2d;
+  --line:#1c2942;
+  --line-soft:#162136;
+  --ink:#e8eefc;
+  --ink-dim:#93a3c4;
+  --ink-faint:#64748f;
+  --sky:#38bdf8;
+  --sky-deep:#0ea5e9;
+  --mint:#34d399;
+  --amber:#fbbf24;
+  --rose:#fb7185;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ground)}
+body{color:var(--ink);font-family:var(--ui);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--sky)}
+.wrap{max-width:64rem;margin:0 auto;padding-inline:22px}
+
+/* ambient glow, hero only */
+.glowwrap{position:relative;isolation:isolate}
+.glow{position:absolute;left:50%;top:-16rem;width:min(92vw,62rem);height:38rem;
+      transform:translateX(-50%);pointer-events:none;z-index:-1;
+      background:
+        radial-gradient(48% 46% at 50% 42%, rgba(56,189,248,.20), transparent 70%),
+        radial-gradient(38% 40% at 28% 58%, rgba(52,211,153,.13), transparent 72%),
+        radial-gradient(42% 38% at 74% 52%, rgba(99,102,241,.15), transparent 74%);
+      filter:blur(14px)}
+.gridlines{position:absolute;inset:-12rem 0 auto;height:46rem;pointer-events:none;z-index:-2;
+  background-image:linear-gradient(rgba(56,189,248,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(56,189,248,.045) 1px,transparent 1px);
+  background-size:66px 66px;
+  mask-image:radial-gradient(60% 55% at 50% 30%,#000 30%,transparent 78%);
+  -webkit-mask-image:radial-gradient(60% 55% at 50% 30%,#000 30%,transparent 78%)}
+
+/* nav */
+header{padding-block:20px 0;position:relative;z-index:2}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.022em;font-size:1.03rem}
+.bar .sp{flex:1}
+.bar a.nav{color:var(--ink-dim);text-decoration:none;font-size:.87rem;font-weight:500;transition:.15s}
+.bar a.nav:hover{color:var(--ink)}
+@media (max-width:620px){.bar a.nav:not(.keep){display:none}}
+
+/* hero */
+.hero{text-align:center;padding-block:58px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.72rem;
+  letter-spacing:.02em;color:var(--ink-dim);border:1px solid var(--line);background:rgba(13,20,36,.7);
+  border-radius:100px;padding:.32rem .78rem;margin-bottom:22px}
+.eyebrow .d{width:5px;height:5px;border-radius:50%;background:var(--mint);
+  box-shadow:0 0 0 3px rgba(52,211,153,.16)}
+h1{font-size:clamp(2.15rem,6vw,4.05rem);line-height:1.02;letter-spacing:-.042em;font-weight:800;
+   margin:0 0 20px;text-wrap:balance}
+h1 .grad{background:linear-gradient(104deg,var(--sky) 6%,#818cf8 52%,var(--mint) 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{font-size:clamp(1rem,2.2vw,1.2rem);color:var(--ink-dim);max-width:41rem;margin:0 auto 26px;text-wrap:balance}
+.cta{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:.72rem 1.3rem;border-radius:9px;
+  font-size:.92rem;font-weight:600;text-decoration:none;border:1px solid transparent;transition:.16s}
+.btn.primary{background:linear-gradient(180deg,var(--sky),var(--sky-deep));color:#04121f;
+  box-shadow:0 8px 26px -10px rgba(56,189,248,.6)}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 12px 30px -10px rgba(56,189,248,.72)}
+.btn.ghost{background:rgba(17,26,45,.8);color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:#2d4266}
+.meta{font-family:var(--mono);font-size:.74rem;color:var(--ink-faint)}
+
+/* video */
+.demo{padding-block:40px 0}
+.frame{position:relative;border:1px solid var(--line);border-radius:15px;overflow:hidden;
+  background:#05070d;box-shadow:0 34px 80px -34px rgba(0,0,0,.92),0 0 0 1px rgba(56,189,248,.06)}
+.chrome{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line-soft);
+  background:linear-gradient(180deg,rgba(23,34,56,.75),rgba(13,20,36,.4))}
+.dot{width:9px;height:9px;border-radius:50%;background:#28344d}
+.chrome .lbl{margin-left:9px;font-family:var(--mono);font-size:.7rem;color:var(--ink-faint)}
+.slot{position:relative;aspect-ratio:844/396;width:100%;display:block;background:#05070d}
+.slot img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;opacity:.34}
+.slotover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:13px;text-align:center;padding:22px;
+  background:linear-gradient(180deg,rgba(7,11,22,.5),rgba(7,11,22,.9))}
+.play{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid rgba(56,189,248,.38);background:rgba(56,189,248,.1)}
+.play svg{margin-left:3px}
+.slotover .t{font-weight:650;font-size:1.02rem}
+.slotover .s{font-family:var(--mono);font-size:.75rem;color:var(--ink-faint);max-width:31rem;line-height:1.6}
+.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(12.5rem,1fr));gap:10px;margin-top:18px}
+.chap{background:var(--raise);border:1px solid var(--line-soft);border-radius:11px;padding:.85rem .95rem}
+.chap .n{font-family:var(--mono);font-size:.67rem;color:var(--sky);font-weight:700;letter-spacing:.04em}
+.chap .h{font-weight:620;font-size:.9rem;margin-top:.2rem}
+.chap .d{font-size:.8rem;color:var(--ink-faint);margin-top:.22rem;line-height:1.5}
+
+/* sections */
+section{padding-block:76px}
+.shead{margin-bottom:30px}
+.kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--sky);margin-bottom:9px}
+h2{font-size:clamp(1.5rem,3.4vw,2.2rem);letter-spacing:-.03em;font-weight:750;margin:0 0 9px;text-wrap:balance}
+.lede{color:var(--ink-dim);max-width:45rem;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:12px}
+.card{background:var(--raise);border:1px solid var(--line-soft);border-radius:12px;padding:1.15rem 1.2rem;
+  transition:.17s}
+.card:hover{border-color:var(--line);background:var(--raise-2);transform:translateY(-2px)}
+.card h3{font-size:.96rem;font-weight:650;margin:0 0 .35rem;letter-spacing:-.012em}
+.card p{font-size:.86rem;color:var(--ink-faint);margin:0;line-height:1.56}
+code{font-family:var(--mono);font-size:.85em;background:rgba(56,189,248,.09);color:#9ed8f7;
+  padding:.1em .36em;border-radius:5px;border:1px solid rgba(56,189,248,.16)}
+
+/* shot */
+.shot{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#05070d;margin-top:22px;
+  box-shadow:0 26px 60px -32px rgba(0,0,0,.9)}
+.shot img{width:100%;display:block}
+.cap{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);text-align:center;margin-top:11px}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--raise)}
+table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.86rem}
+th{text-align:left;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-faint);
+  font-weight:600;padding:.68rem .85rem;border-bottom:1px solid var(--line-soft)}
+td{padding:.68rem .85rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.mono{font-family:var(--mono);font-size:.8rem;color:var(--ink-dim)}
+.pill{display:inline-block;font-family:var(--mono);font-size:.67rem;padding:.14rem .46rem;border-radius:5px;
+  border:1px solid var(--line);color:var(--ink-faint);white-space:nowrap}
+.pill.ok{color:var(--mint);border-color:rgba(52,211,153,.32);background:rgba(52,211,153,.08)}
+
+/* code blocks */
+pre{background:#05070d;border:1px solid var(--line-soft);border-radius:12px;padding:1.05rem 1.15rem;
+  overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.7;margin:0;color:var(--ink)}
+pre .c{color:#54648a}
+pre .g{color:var(--mint)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media (max-width:660px){.two{grid-template-columns:1fr}}
+h4{font-size:.86rem;font-weight:600;margin:0 0 .55rem;color:var(--ink-dim);font-family:var(--mono)}
+.callout{border-left:2px solid var(--amber);padding:.6rem 0 .6rem 1rem;color:var(--ink-dim);
+  font-size:.86rem;margin-top:17px;line-height:1.6}
+.callout b{color:var(--ink)}
+
+/* strip */
+.strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:26px}
+.strip span{font-family:var(--mono);font-size:.73rem;color:var(--ink-dim);border:1px solid var(--line-soft);
+  background:var(--raise);border-radius:100px;padding:.34rem .8rem}
+
+/* closer */
+.closer{text-align:center;border:1px solid var(--line-soft);border-radius:16px;padding:46px 24px;
+  background:radial-gradient(70% 120% at 50% 0%,rgba(56,189,248,.11),transparent 68%),var(--raise)}
+.closer h2{margin-bottom:12px}
+
+footer{border-top:1px solid var(--line-soft);padding-block:28px 46px;margin-top:64px}
+.foot{display:flex;gap:15px;flex-wrap:wrap;align-items:center;font-size:.83rem;color:var(--ink-faint)}
+.foot a{color:var(--ink-faint);text-decoration:none}
+.foot a:hover{color:var(--ink)}
+.foot .sp{flex:1}
+:focus-visible{outline:2px solid var(--sky);outline-offset:3px;border-radius:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.card:hover,.btn.primary:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<div class="glowwrap">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="gridlines" aria-hidden="true"></div>
+  <div class="wrap">
+    <header>
+      <div class="bar">
+        <div class="logo">
+          <svg width="23" height="23" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="7" fill="#0d1424"/>
+            <g fill="#38bdf8">
+              <rect x="7" y="17" width="2.6" height="8" rx="1"/><rect x="11" y="13" width="2.6" height="12" rx="1"/>
+              <rect x="15" y="9" width="2.6" height="16" rx="1"/><rect x="19" y="14" width="2.6" height="11" rx="1"/>
+              <rect x="23" y="19" width="2.6" height="6" rx="1"/>
+            </g>
+          </svg>
+          Agent Island
+        </div>
+        <div class="sp"></div>
+        <a class="nav" href="#demo">Demo</a>
+        <a class="nav" href="#see">Features</a>
+        <a class="nav" href="#jump">The jump</a>
+        <a class="nav keep" href="#install">Install</a>
+        <a class="nav keep" href="https://github.com/Tiwari1999/Agent-Island">GitHub</a>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="eyebrow"><span class="d"></span> Claude Code · Codex · Cursor</div>
+      <h1>Every coding agent you run,<br><span class="grad">in the notch you already have.</span></h1>
+      <p class="tag">Which one is blocked? Which is quietly burning the 5-hour window? Which of nine identical terminal tabs did that notification come from? Each agent knows its own answer, and none of them shows you.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/Tiwari1999/Agent-Island">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          View on GitHub
+        </a>
+        <a class="btn ghost" href="#install">Install</a>
+      </div>
+      <p class="meta">macOS 14+ · Swift 6 · no Xcode required · MIT · runs entirely on your machine</p>
+    </div>
+
+    <div class="demo" id="demo">
+      <div class="frame">
+        <div class="chrome">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="lbl">agent-island — walkthrough</span>
+        </div>
+        <!-- VIDEO SLOT — replace this entire .slot block with:
+             <video class="slot" src="/assets/demo.mp4" autoplay muted loop playsinline
+                    poster="/assets/panel.png"></video> -->
+        <div class="slot">
+          <img src="/assets/panel.png" alt="The Agent Island panel: a quota header above four live agent sessions, each with its model, terminal, context ring and current tool call">
+          <div class="slotover">
+            <div class="play" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="#38bdf8"><path d="M4 2.5v11l9-5.5-9-5.5Z"/></svg>
+            </div>
+            <div class="t">Walkthrough coming shortly</div>
+            <div class="s">A short capture of the four moments below. The panel behind this is the real thing.</div>
+          </div>
+        </div>
+      </div>
+      <div class="chapters">
+        <div class="chap"><div class="n">01</div><div class="h">An agent finishes</div>
+          <div class="d">The bar says so the moment a run ends — and a rate-limited session reads as dead, not complete.</div></div>
+        <div class="chap"><div class="n">02</div><div class="h">An agent needs you</div>
+          <div class="d">A permission card or a question surfaces in the notch, with a countdown before it hands back.</div></div>
+        <div class="chap"><div class="n">03</div><div class="h">Click to land</div>
+          <div class="d">One click on a row focuses that agent's exact terminal tab — not just the app.</div></div>
+        <div class="chap"><div class="n">04</div><div class="h">Expand and reply</div>
+          <div class="d">Open a row for the full chat, then type your answer without leaving the notch.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section id="see">
+  <div class="shead">
+    <div class="kicker">See</div>
+    <h2>Nine tabs, one glance</h2>
+    <p class="lede">Running five to ten agents at once, the bottleneck stops being the agents. It becomes you. Agent Island puts the answer where your eyes already are.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Every agent, one list</h3><p>Claude Code, Codex and Cursor together, each labelled with its own vendor, model and terminal.</p></div>
+    <div class="card"><h3>Live sessions</h3><p>Title, project, model, terminal — and the tool call happening right now.</p></div>
+    <div class="card"><h3>Context pressure</h3><p>A per-session ring, so you compact before the cliff rather than after it.</p></div>
+    <div class="card"><h3>Quota and burn rate</h3><p>Claude's 5h and 7d windows, Codex's own limits, the measured burn rate and projected exhaustion.</p></div>
+    <div class="card"><h3>Died vs finished</h3><p>A rate-limited session shows as dead, not complete — the two look identical everywhere else.</p></div>
+    <div class="card"><h3>Blocked, not shouting</h3><p>Agents stuck on an old question stay visible without crying wolf.</p></div>
+    <div class="card"><h3>Task progress</h3><p><code>4/9</code> with the current step, read from Claude's own task list.</p></div>
+    <div class="card"><h3>Cost breakdown</h3><p>API-equivalent spend per model, today and this month, from the vendors' own token accounting.</p></div>
+    <div class="card"><h3>SSH remote sessions</h3><p>Agents on machines you ssh into, in the same panel. Nothing is installed remotely — the probe travels on stdin.</p></div>
+  </div>
+  <div class="shot">
+    <img src="/assets/panel.png" alt="The expanded panel: quota and burn rate along the top, then one row per agent showing project, session title, vendor, model, terminal, context ring, last instruction and live tool call">
+  </div>
+  <p class="cap">Quota and burn rate up top · one row per agent, with its last instruction and live tool call</p>
+</section>
+
+<section id="act">
+  <div class="shead">
+    <div class="kicker">Act</div>
+    <h2>Answer without switching tabs</h2>
+    <p class="lede">Permission cards and questions are answered in the notch. Nothing is sent until you press submit.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Approve from the notch</h3><p>Permission cards answered with <code>⌘⌥A</code> / <code>⌘⌥D</code>, without leaving what you were doing.</p></div>
+    <div class="card"><h3>Answer questions</h3><p><code>AskUserQuestion</code> prompts answered in place — options on <code>⌘⌥1</code>–<code>⌘⌥4</code>, plus a free-text field for your own words.</p></div>
+    <div class="card"><h3>Plan review</h3><p>Read the full Markdown plan and approve it from the notch, with a 55-second window instead of 20.</p></div>
+    <div class="card"><h3>Sliding window</h3><p>A visible countdown before an unanswered question hands back to the terminal. Every interaction pushes it forward, so answering never times out under you.</p></div>
+    <div class="card"><h3>Or answer in the chat</h3><p>One click releases the turn so Claude's own picker appears in the terminal, and the notch keeps a read-only copy.</p></div>
+    <div class="card"><h3>Alerts that respect you</h3><p>Desktop notifications only when you are not already looking at it.</p></div>
+  </div>
+</section>
+
+<section id="jump">
+  <div class="shead">
+    <div class="kicker">The jump</div>
+    <h2>Land on the exact tab</h2>
+    <p class="lede">Click a row and arrive at that agent's own tab. The session handle comes from the agent process's own environment, so there is no database to read and no keystroke loop to fight — and it resolves correctly even when every tab shares one repo.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Terminal</th><th>Handle</th><th>How it is focused</th><th>Permission</th></tr></thead>
+      <tbody>
+        <tr><td>Warp</td><td class="mono">WARP_FOCUS_URL</td><td>open the <span class="mono">warp://session/…</span> URL</td><td><span class="pill ok">none</span></td></tr>
+        <tr><td>iTerm2</td><td class="mono">ITERM_SESSION_ID</td><td>AppleScript <span class="mono">select</span> that session</td><td><span class="pill">Automation, once</span></td></tr>
+        <tr><td>Terminal.app</td><td class="mono">controlling tty</td><td>AppleScript select the matching tab</td><td><span class="pill">Automation, once</span></td></tr>
+        <tr><td>kitty</td><td class="mono">KITTY_WINDOW_ID</td><td><span class="mono">kitty @ focus-window</span></td><td><span class="pill ok">none</span></td></tr>
+        <tr><td>WezTerm</td><td class="mono">WEZTERM_PANE</td><td><span class="mono">wezterm cli activate-pane</span></td><td><span class="pill ok">none</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">Other notch apps resolve Warp tabs by reading <span class="mono">warp.sqlite</span> and driving a keystroke loop. That cannot tell apart tabs sharing a working directory — so in a monorepo it lands on the wrong one.</div>
+</section>
+
+<section id="install">
+  <div class="shead">
+    <div class="kicker">Install</div>
+    <h2>Two commands, no account</h2>
+    <p class="lede">Everything runs locally. No server, no telemetry, no API key, no subscription — it reads only what your agents already write to your own disk.</p>
+  </div>
+  <div class="two">
+    <div>
+      <h4>From source</h4>
+      <pre><span class="g">git</span> clone https://github.com/Tiwari1999/Agent-Island.git
+<span class="g">cd</span> Agent-Island
+<span class="g">./install.sh</span>
+
+<span class="c"># builds a release binary, assembles the app,</span>
+<span class="c"># registers the hooks, and launches it</span></pre>
+    </div>
+    <div>
+      <h4>Removing it</h4>
+      <pre><span class="g">python3</span> scripts/uninstall-hooks.py
+<span class="g">rm</span> -rf ~/Applications/AgentIsland.app
+
+<span class="c"># removes only its own hook entries and</span>
+<span class="c"># restores a statusLine it wrapped</span></pre>
+    </div>
+  </div>
+  <div class="callout"><b>From a release DMG:</b> right-click the app and choose <b>Open</b>, then Open again. These builds are not notarized yet, so a double-click gives “cannot be opened because the developer cannot be verified”. That is macOS's own way of saying you trust it, and only the first launch needs it. There is no <span class="mono">xattr</span> command to run — be suspicious of any project that gives you one.</div>
+  <div class="strip">
+    <span>no Screen Recording</span><span>no Full Disk Access</span><span>no Accessibility for any jump</span>
+    <span>zero subprocesses at idle</span><span>27 sessions in 0.08s</span>
+  </div>
+</section>
+
+<section>
+  <div class="closer">
+    <h2>Put it in the notch</h2>
+    <p class="lede" style="margin:0 auto 22px">Open source, MIT, and it never leaves your machine.</p>
+    <div class="cta" style="margin-bottom:0">
+      <a class="btn primary" href="https://github.com/Tiwari1999/Agent-Island">Get Agent Island</a>
+      <a class="btn ghost" href="https://github.com/Tiwari1999/Agent-Island/issues">Report an issue</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <span>MIT licensed</span><span>·</span>
+    <a href="https://github.com/Tiwari1999/Agent-Island">Source</a>
+    <a href="https://github.com/Tiwari1999/Agent-Island/issues">Issues</a>
+    <div class="sp"></div>
+    <span class="mono">macOS 14+</span>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
