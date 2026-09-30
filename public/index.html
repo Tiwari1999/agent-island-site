@@ -735,7 +735,6 @@
     .reply button { cursor: pointer; }
     .c-card p.sent-line { animation: sentIn .22s ease-out; }
     @keyframes sentIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
-    .q-opt.free { color: var(--faint); }
     .q-count {
       margin-top: 11px;
       height: 2px;
@@ -1939,12 +1938,33 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
           </div>
           <!-- static miniature of the question UI, echoing the live panel -->
           <div class="mini-q" aria-hidden="true">
-            <p class="q-label">question · api-gateway</p>
+            <div class="q-top">
+              <span class="q-header">Card detail</span>
+              <span class="q-left">4:12</span>
+            </div>
             <p class="q-text">Pin the rustls version, or mark the test flaky and move on?</p>
             <div class="q-options">
-              <button class="q-opt" tabindex="-1">Pin rustls to 0.23</button>
-              <button class="q-opt" tabindex="-1">Mark test flaky</button>
-              <button class="q-opt free" tabindex="-1">Something else…</button>
+              <button class="q-opt" tabindex="-1">
+                <span class="q-num">1</span>
+                <span class="q-body">
+                  <span class="q-lab">Pin rustls to 0.23</span>
+                  <span class="q-det">Match what CI resolves. One line in Cargo.toml.</span>
+                </span>
+              </button>
+              <button class="q-opt" tabindex="-1">
+                <span class="q-num">2</span>
+                <span class="q-body">
+                  <span class="q-lab">Mark test flaky</span>
+                  <span class="q-det">Fastest to green, but the version skew stays.</span>
+                </span>
+              </button>
+              <button class="q-opt" tabindex="-1">
+                <span class="q-num">3</span>
+                <span class="q-body">
+                  <span class="q-lab">Something else…</span>
+                  <span class="q-det">Type your own answer instead.</span>
+                </span>
+              </button>
             </div>
             <div class="q-count"><i class="q-bar"></i></div>
           </div>
