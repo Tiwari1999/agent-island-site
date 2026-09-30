@@ -218,11 +218,28 @@
        Stacked, the panel sat below the fold and the page opened on text alone. */
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-      gap: 44px;
+      grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
+      gap: 36px;
       align-items: center;
     }
     .hero-copy { min-width: 0; }
+    /* The vendor name cycles: the product is not for one agent, and naming them
+       one at a time says that faster than a list does. */
+    .h1-run { display: block; }
+    /* The swapped name changes width; a min-height keeps the headline from
+       reflowing under it on every tick. */
+    .h1-run { min-height: 1.06em; }
+    .vend {
+      color: var(--vend, var(--accent));
+      transition: color .3s ease;
+      white-space: nowrap;
+    }
+    .vend.swap { animation: vendIn .34s ease-out; }
+    @keyframes vendIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vend.swap { animation: none; } }
     /* desk + tabs + the line that names the state are one column, so the tabs
        sit under the panel instead of falling into the text column. */
     .hero-stage { min-width: 0; }
@@ -325,35 +342,41 @@
       margin-top: 46px;
       max-width: 860px;
     }
+    /* The notch is cut into the top edge of the screen, and the panel hangs off
+       it as one continuous piece of black — not a separate bar sitting below a
+       separate chip, which is what made it read as two broken parts. */
     .panel-notch {
-      width: 168px;
-      height: 19px;
-      margin: 0 auto -1px;
+      width: 132px;
+      height: 20px;
+      margin: 0 auto -10px;
       background: #000;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: 0 0 11px 11px;
+      border-radius: 0 0 13px 13px;
       position: relative;
-      z-index: 2;
+      z-index: 3;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      padding-top: 7px;
     }
+    /* the camera */
     .panel-notch::before {
       content: "";
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: #10151c;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
     }
     .panel {
-      background: var(--panel);
+      background: #000;
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-top: none;
+      border-radius: 0 0 16px 16px;
       box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
       font-size: 13px;
       overflow: hidden;
+      position: relative;
+      z-index: 2;
     }
 
     /* --- header strip: quota, burn rate, session counts --- */
@@ -601,6 +624,8 @@
     }
     [data-state="2"] .q-reveal { grid-template-rows: 1fr; }
     [data-state="2"] .q-reveal > div { opacity: 1; transform: none; }
+    [data-state="2"] .q2-reveal { grid-template-rows: 1fr; }
+    [data-state="2"] .q2-reveal > div { opacity: 1; transform: none; }
     [data-state="4"] .c-reveal { grid-template-rows: 1fr; }
     [data-state="4"] .c-reveal > div { opacity: 1; transform: none; }
 
@@ -747,6 +772,44 @@
     }
 
     /* state dots beneath the panel */
+    /* ---- explain: a question you do not have the context to answer ---- */
+    .q-explain {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--accent);
+      background: none;
+      border: 1px dashed var(--accent-edge);
+      border-radius: 6px;
+      padding: .24rem .55rem;
+      cursor: pointer;
+      transition: .14s;
+    }
+    .q-explain:hover { background: var(--accent-dim); }
+    .q-explain.done { opacity: .45; pointer-events: none; }
+    .q-expl {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .32s ease;
+      margin-top: 0;
+    }
+    .q-expl > p {
+      overflow: hidden;
+      margin: 0;
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity .3s ease .08s;
+    }
+    .q-card.explained .q-expl { grid-template-rows: 1fr; margin-top: 8px; }
+    .q-card.explained .q-expl > p {
+      opacity: 1;
+      border-left: 2px solid var(--accent-edge);
+      padding: 2px 0 2px 10px;
+    }
+    .q-expl b { color: var(--text); font-weight: 500; }
+
     /* ---- permission card: the diff, with the keys that answer it ---- */
     .p-card {
       margin: 8px 0 2px;
@@ -855,8 +918,8 @@
 
     .desk-body {
       position: relative;
-      padding: 30px 16px 26px;
-      min-height: 330px;
+      padding: 0 16px 30px;
+      min-height: 430px;
       /* A macOS-ish wallpaper, drawn rather than shipped as an image. */
       background:
         radial-gradient(120% 90% at 14% 8%, #2b4a7a 0%, transparent 55%),
@@ -906,7 +969,15 @@
     @media (max-width: 860px) { .term { display: none; } .desk-body { min-height: 0; padding: 22px 10px 18px; } }
 
     /* the panel floats above the desktop, where it actually lives */
-    .desk .panel-shell { position: relative; z-index: 2; margin: 0 auto; max-width: 96%; }
+    /* Flush to the top of the screen: the notch is part of the bezel, so there
+       is no gap above it. */
+    /* The panel is narrower than the screen, so the desktop reads as a screen
+       with an island on it rather than a panel with a wallpaper border. */
+    .desk .panel-shell {
+      position: relative; z-index: 4; margin: 0 auto; max-width: 88%;
+    }
+    .desk-body { padding-top: 0 !important; }
+    .desk-bar { z-index: 1; }
 
     /* Named tabs, not dots: the four words are the product's four jobs, so the
        control itself says what the panel can do before anything is clicked. */
@@ -1422,7 +1493,8 @@
           <span class="dot" aria-hidden="true"></span>
           Claude Code <span class="sep">/</span> Codex <span class="sep">/</span> Cursor
         </p>
-        <h1>Every coding agent you run, in the notch you already have.</h1>
+        <h1>Every <span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span> run,<br>
+          in the notch you already have.</h1>
         <p class="lede">
           Agent Island turns the MacBook notch into a live dashboard for your AI coding
           agents. Which one is blocked, which one is asking, which one is burning
@@ -1556,6 +1628,15 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                         <button class="q-opt" data-testid="q-opt-2">Mark test flaky</button>
                         <button class="q-opt free" data-testid="q-opt-3">Something else…</button>
                       </div>
+                      <button class="q-explain" data-testid="question-explain">
+                        <span aria-hidden="true">✦</span> explain this
+                      </button>
+                      <div class="q-expl" data-testid="question-explanation">
+                        <p><b>rustls 0.23</b> changed the default crypto provider. The test pins
+                        0.22 and passes locally because the lockfile is stale; CI resolves fresh
+                        and fails. Pinning is the honest fix — marking it flaky hides a real
+                        version skew that will reach production.</p>
+                      </div>
                       <div class="q-answered" data-testid="question-answered"></div>
                     </div>
                   </div>
@@ -1652,6 +1733,25 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                   <span class="ts">6m</span>
                   <button class="jump" aria-label="Jump to nvim-config terminal tab" data-testid="jump-row-d"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 8 L8 2 M3.5 2 H8 V6.5"/></svg></button>
                 </div>
+
+                <!-- The same card shape for a different vendor: the panel does not
+                     care which agent asked, and showing one Claude card alone
+                     implied it did. -->
+                <div class="reveal q2-reveal">
+                  <div>
+                    <div class="q-card q-card-2" data-testid="question-card-cursor">
+                      <p class="q-label">question · nvim-config</p>
+                      <p class="q-text">The new vim.lsp.config API needs a minimum Neovim version. Pin 0.11, or keep a fallback for 0.10?</p>
+                      <div class="q-options">
+                        <button class="q-opt" data-testid="q2-opt-1">Pin 0.11</button>
+                        <button class="q-opt" data-testid="q2-opt-2">Keep the fallback</button>
+                        <button class="q-opt free" data-testid="q2-opt-3">Something else…</button>
+                      </div>
+                      <div class="q-bar"></div>
+                      <div class="q-answered" data-testid="question-answered-2"></div>
+                    </div>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -1680,7 +1780,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
             <p class="psay-h" data-for="1">Every agent. One glance.</p>
             <p class="psay-s" data-for="1">Claude Code, Codex and Cursor in a single view — with the run that just finished.</p>
             <p class="psay-h" data-for="2">Answer without switching apps.</p>
-            <p class="psay-s" data-for="2">A question reaches the notch with its options. Pick one and the turn goes back.</p>
+            <p class="psay-s" data-for="2">Any agent, the same card. Pick an option — or have the notch explain the question first.</p>
             <p class="psay-h" data-for="5">Approve without switching apps.</p>
             <p class="psay-s" data-for="5">The diff comes to the notch. Allow or deny with a keystroke, and the agent carries on.</p>
             <p class="psay-h" data-for="3">Land on the exact tab.</p>
@@ -2034,14 +2134,38 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         });
       });
 
+      // The headline names one agent at a time, in that vendor's own colour, so
+      // "every coding agent" is shown rather than asserted.
+      (function () {
+        var el = document.querySelector('.vend');
+        if (!el) return;
+        var VENDORS = [
+          ['Claude\u00a0Code', '#d49a6a'],
+          ['Codex',             '#3ecf8e'],
+          ['Cursor',            '#a78bfa'],
+          ['Gemini\u00a0CLI',  '#4da8ff'],
+          ['Copilot',           '#9aa4b2']
+        ];
+        var vi = 0;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        setInterval(function () {
+          vi = (vi + 1) % VENDORS.length;
+          el.classList.remove('swap');
+          void el.offsetWidth;                 // restart the animation
+          el.textContent = VENDORS[vi][0];
+          el.style.setProperty('--vend', VENDORS[vi][1]);
+          el.classList.add('swap');
+        }, 2600);
+      })();
+
       // ---- the demo is a demo: make every control in it actually respond ----
       // Nothing below talks to a server. It moves the same panel a real session
       // would move, so a visitor can try the product rather than watch it.
 
 
-      // Question options: pick one, the choice sticks and the countdown stops.
-      var qcard = panel.querySelector('.q-card');
-      if (qcard) {
+      // Question options, on every card in the panel — the Claude one and the
+      // Cursor one — because the point is that the card does not care who asked.
+      Array.prototype.slice.call(panel.querySelectorAll('.q-card')).forEach(function (qcard) {
         var opts = Array.prototype.slice.call(qcard.querySelectorAll('.q-opt'));
         var answered = qcard.querySelector('.q-answered');
         opts.forEach(function (o) {
@@ -2054,7 +2178,17 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
             }
           });
         });
-      }
+        // Explain: some questions cannot be answered without context the notch
+        // can fetch for you, so the card can explain itself before you choose.
+        var ex = qcard.querySelector('.q-explain');
+        if (ex) {
+          ex.addEventListener('click', function () {
+            qcard.classList.add('explained');
+            ex.classList.add('done');
+            ex.innerHTML = '<span aria-hidden="true">\u2726</span> explained';
+          });
+        }
+      });
 
       // Allow / Deny: answer the permission, say what was sent, stop the card.
       var pcard = panel.querySelector('.p-card');
