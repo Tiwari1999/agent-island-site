@@ -220,15 +220,18 @@
       display: grid;
       grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
       gap: 36px;
-      align-items: center;
+      align-items: start;
+      padding-top: 8px;
     }
     .hero-copy { min-width: 0; }
     /* The vendor name cycles: the product is not for one agent, and naming them
        one at a time says that faster than a list does. */
-    .h1-run { display: block; }
-    /* The swapped name changes width; a min-height keeps the headline from
-       reflowing under it on every tick. */
-    .h1-run { min-height: 1.06em; }
+    /* The names differ in length — "Claude Code" wraps where "Copilot" does not —
+       so the vendor owns a whole line and the rest of the headline never moves. */
+    .vend-line {
+      display: block;
+      white-space: nowrap;
+    }
     .vend {
       color: var(--vend, var(--accent));
       transition: color .3s ease;
@@ -637,6 +640,22 @@
       border-radius: 9px;
       padding: 11px 13px 12px;
     }
+    .q-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+    .q-header {
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--accent);
+    }
+    .q-count { color: var(--faint); }
+    .q-left { margin-left: auto; color: var(--faint); font-variant-numeric: tabular-nums; }
+
     .q-label {
       font-family: var(--mono);
       font-size: 9.5px;
@@ -651,30 +670,49 @@
       line-height: 1.5;
       color: var(--text);
     }
-    .q-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
+    /* The real card stacks its options: a numbered box, the label, the detail
+       every real ask carries, and — once explained — what picking THAT one
+       means, under the option it is about. Chips in a row were wrong. */
+    .q-options { display: flex; flex-direction: column; gap: 3px; margin-top: 8px; }
     .q-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 7px 9px;
+      cursor: pointer;
+      transition: background .14s, border-color .14s;
+    }
+    .q-num {
+      flex: none;
+      width: 15px; height: 15px;
+      display: grid; place-items: center;
+      font-family: var(--mono); font-size: 9.5px;
+      color: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .q-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .q-lab { font-size: 12.5px; font-weight: 550; color: var(--text); }
+    .q-det { font-family: var(--mono); font-size: 10.5px; line-height: 1.6; color: var(--faint); }
+    .q-why {
+      display: none;
       font-family: var(--mono);
       font-size: 10.5px;
-      color: var(--text);
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      padding: 5px 10px;
-      cursor: pointer;
-      transition: border-color 150ms ease-out, color 150ms ease-out;
+      line-height: 1.55;
+      color: var(--amber);
+      margin-top: 2px;
     }
-    .q-opt:hover { border-color: var(--accent-edge); color: var(--accent); }
+    .q-bulb { margin-right: 5px; }
+    .q-card.explained .q-why { display: block; animation: sayIn .26s ease-out; }
+    .q-opt:hover { background: var(--surface-2); }
     .q-opt { cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
-    .q-opt.picked {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+    .q-opt.picked { background: var(--amber-dim); border-color: var(--amber-edge); }
+    .q-opt.picked .q-num { color: var(--amber); border-color: var(--amber-edge); }
     /* Answering stops the countdown: the bar freezes where it stood. */
     .q-card.answered .q-bar { animation-play-state: paused; }
     .q-answered {
@@ -1493,7 +1531,7 @@
           <span class="dot" aria-hidden="true"></span>
           Claude Code <span class="sep">/</span> Codex <span class="sep">/</span> Cursor
         </p>
-        <h1>Every <span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span> run,<br>
+        <h1>Every <span class="vend-line"><span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span></span> run,<br>
           in the notch you already have.</h1>
         <p class="lede">
           Agent Island turns the MacBook notch into a live dashboard for your AI coding
@@ -1621,22 +1659,41 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                 <div class="reveal q-reveal">
                   <div>
                     <div class="q-card" data-testid="question-card">
-                      <p class="q-label">question · api-gateway</p>
+                      <div class="q-top">
+                        <span class="q-header">Card detail</span>
+                        <span class="q-count">1 of 1</span>
+                        <span class="q-left" data-testid="question-countdown">4:12</span>
+                      </div>
                       <p class="q-text">The health-check test passes locally but fails on CI. Pin the rustls version, or mark the test flaky and move on?</p>
                       <div class="q-options">
-                        <button class="q-opt" data-testid="q-opt-1">Pin rustls to 0.23</button>
-                        <button class="q-opt" data-testid="q-opt-2">Mark test flaky</button>
-                        <button class="q-opt free" data-testid="q-opt-3">Something else…</button>
+                        <button class="q-opt" data-testid="q-opt-1">
+                          <span class="q-num">1</span>
+                          <span class="q-body">
+                            <span class="q-lab">Pin rustls to 0.23</span>
+                            <span class="q-det">Match what CI resolves. One line in Cargo.toml, and the lockfile stops drifting from the test.</span>
+                            <span class="q-why"><span class="q-bulb" aria-hidden="true">&#128161;</span>The honest fix — the skew is real and will reach production otherwise.</span>
+                          </span>
+                        </button>
+                        <button class="q-opt" data-testid="q-opt-2">
+                          <span class="q-num">2</span>
+                          <span class="q-body">
+                            <span class="q-lab">Mark test flaky</span>
+                            <span class="q-det">Skip it on CI and keep moving. Fastest to green, but the version skew stays.</span>
+                            <span class="q-why"><span class="q-bulb" aria-hidden="true">&#128161;</span>Hides a real failure; the next release inherits it.</span>
+                          </span>
+                        </button>
+                        <button class="q-opt" data-testid="q-opt-3">
+                          <span class="q-num">3</span>
+                          <span class="q-body">
+                            <span class="q-lab">Something else…</span>
+                            <span class="q-det">Type your own answer instead of picking one of these.</span>
+                          </span>
+                        </button>
                       </div>
                       <button class="q-explain" data-testid="question-explain">
-                        <span aria-hidden="true">✦</span> explain this
+                        <span aria-hidden="true">&#128161;</span> explain this
                       </button>
-                      <div class="q-expl" data-testid="question-explanation">
-                        <p><b>rustls 0.23</b> changed the default crypto provider. The test pins
-                        0.22 and passes locally because the lockfile is stale; CI resolves fresh
-                        and fails. Pinning is the honest fix — marking it flaky hides a real
-                        version skew that will reach production.</p>
-                      </div>
+                      <div class="q-bar"></div>
                       <div class="q-answered" data-testid="question-answered"></div>
                     </div>
                   </div>
@@ -1740,12 +1797,34 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                 <div class="reveal q2-reveal">
                   <div>
                     <div class="q-card q-card-2" data-testid="question-card-cursor">
-                      <p class="q-label">question · nvim-config</p>
+                      <div class="q-top">
+                        <span class="q-header">Neovim floor</span>
+                        <span class="q-count">1 of 2</span>
+                        <span class="q-left">2:48</span>
+                      </div>
                       <p class="q-text">The new vim.lsp.config API needs a minimum Neovim version. Pin 0.11, or keep a fallback for 0.10?</p>
                       <div class="q-options">
-                        <button class="q-opt" data-testid="q2-opt-1">Pin 0.11</button>
-                        <button class="q-opt" data-testid="q2-opt-2">Keep the fallback</button>
-                        <button class="q-opt free" data-testid="q2-opt-3">Something else…</button>
+                        <button class="q-opt" data-testid="q2-opt-1">
+                          <span class="q-num">1</span>
+                          <span class="q-body">
+                            <span class="q-lab">Pin 0.11</span>
+                            <span class="q-det">Drop the shim entirely. Cleaner config, but anyone on 0.10 loses LSP until they upgrade.</span>
+                          </span>
+                        </button>
+                        <button class="q-opt" data-testid="q2-opt-2">
+                          <span class="q-num">2</span>
+                          <span class="q-body">
+                            <span class="q-lab">Keep the fallback</span>
+                            <span class="q-det">Branch on vim.fn.has. Works everywhere, costs about forty lines you will carry for a year.</span>
+                          </span>
+                        </button>
+                        <button class="q-opt" data-testid="q2-opt-3">
+                          <span class="q-num">3</span>
+                          <span class="q-body">
+                            <span class="q-lab">Something else…</span>
+                            <span class="q-det">Type your own answer instead of picking one of these.</span>
+                          </span>
+                        </button>
                       </div>
                       <div class="q-bar"></div>
                       <div class="q-answered" data-testid="question-answered-2"></div>
@@ -2174,7 +2253,9 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
             o.classList.add('picked');
             qcard.classList.add('answered');
             if (answered) {
-              answered.textContent = 'sent · "' + o.textContent.trim() + '" — the turn goes back to the agent';
+              var lab = o.querySelector('.q-lab');
+              answered.textContent = 'sent · "' + (lab ? lab.textContent.trim() : o.textContent.trim())
+                + '" — the turn goes back to the agent';
             }
           });
         });
