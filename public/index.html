@@ -233,7 +233,7 @@
     /* Each line centres itself. With the vendor inside one long flow, a short
        name ("Codex") and a long one ("Claude Code") shifted the whole line's
        centre, so the first line drifted while the second stayed put. */
-    .h1-line { display: block; }
+    .h1-line { display: block; width: 100%; }
     .vend { white-space: nowrap; }
     .vend {
       color: var(--vend, var(--accent));
@@ -281,15 +281,15 @@
       line-height: 1.1;
       letter-spacing: -0.035em;
       font-weight: 600;
-      margin: 20px 0 0;
-      max-width: 19ch;
+      margin: 20px auto 0;
+      max-width: 22ch;
     }
     .lede {
       color: var(--muted);
       font-size: 15px;
       line-height: 1.6;
       max-width: 58ch;
-      margin: 16px 0 0;
+      margin: 16px auto 0;
     }
     .hero-copy .hero-actions { justify-content: center; }
     .hero-actions {
