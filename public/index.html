@@ -927,6 +927,20 @@
     [data-state="5"] .p-reveal > div { opacity: 1; transform: none; }
     @media (max-width: 640px) { .dl .dc { font-size: 10px; } .p-btn kbd { display: none; } }
 
+    /* the recorded capture: framed like the desk, but it is video, not DOM */
+    /* .lede is auto-margined for the centred hero; here it reads as an indent. */
+    .real-lede { margin-inline: 0; }
+    .real-frame {
+      margin-top: 24px;
+      border: 1px solid var(--line-soft, var(--border));
+      border-radius: 14px;
+      overflow: hidden;
+      background: #05070d;
+      box-shadow: 0 30px 70px -34px rgba(0,0,0,.92);
+      line-height: 0;
+    }
+    .real-frame video { width: 100%; height: auto; display: block; }
+
     /* ---- mock macOS desktop behind the panel ---- */
     .desk {
       position: relative;
@@ -1885,6 +1899,25 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
           <span>It becomes you. Which one is blocked. Which one is burning quota.
           <span class="hl">Which of nine identical terminal tabs that notification came from.</span></span>
         </p>
+      </div>
+    </section>
+
+    <!-- ====================== THE REAL THING ====================== -->
+    <!-- A capture of the running app, not a recreation. The hero panel above is
+         built in DOM so it can be interactive; this is here to show the same
+         thing is real. Replace assets/demo.mp4 to update it. -->
+    <section id="real" aria-labelledby="real-heading">
+      <div class="wrap">
+        <p class="kicker">Recorded, not mocked</p>
+        <h2 id="real-heading">The panel, running</h2>
+        <p class="lede real-lede">Three live sessions, their models and terminals, context and spend —
+          read from the agents themselves while they work.</p>
+        <div class="real-frame">
+          <video src="/assets/demo.mp4" poster="/assets/demo-poster.jpg"
+                 autoplay muted loop playsinline preload="metadata"
+                 data-testid="real-demo-video"></video>
+        </div>
+        <p class="cap">A real capture of the app on this machine</p>
       </div>
     </section>
 
