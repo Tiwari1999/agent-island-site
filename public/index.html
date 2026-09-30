@@ -1,372 +1,1684 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agent Island</title>
-<meta name="description" content="Every coding agent you run, in the notch you already have. Claude Code, Codex and Cursor in one panel — jump to the exact terminal tab, approve and answer without leaving it.">
-<meta property="og:title" content="Agent Island">
-<meta property="og:description" content="Every coding agent you run, in the notch you already have.">
-<meta property="og:type" content="website">
-<meta name="theme-color" content="#070b16">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b16'/%3E%3Cg fill='%2338bdf8'%3E%3Crect x='7' y='17' width='2.6' height='8' rx='1'/%3E%3Crect x='11' y='13' width='2.6' height='12' rx='1'/%3E%3Crect x='15' y='9' width='2.6' height='16' rx='1'/%3E%3Crect x='19' y='14' width='2.6' height='11' rx='1'/%3E%3Crect x='23' y='19' width='2.6' height='6' rx='1'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<style>
-/* Layout: single column on a deep blue-black ground; one ambient glow behind the hero,
-   then tight product sections. Committed dark — the product itself is a dark notch panel. */
-:root{
-  --ground:#070b16;
-  --raise:#0d1424;
-  --raise-2:#111a2d;
-  --line:#1c2942;
-  --line-soft:#162136;
-  --ink:#e8eefc;
-  --ink-dim:#93a3c4;
-  --ink-faint:#64748f;
-  --sky:#38bdf8;
-  --sky-deep:#0ea5e9;
-  --mint:#34d399;
-  --amber:#fbbf24;
-  --rose:#fb7185;
-  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color-scheme:dark;
-}
-*{box-sizing:border-box}
-html,body{background:var(--ground)}
-body{color:var(--ink);font-family:var(--ui);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:var(--sky)}
-.wrap{max-width:64rem;margin:0 auto;padding-inline:22px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Island — every coding agent you run, in the notch you already have</title>
+  <meta name="description" content="Agent Island turns the MacBook notch into a live dashboard for your AI coding agents. See which one is blocked, asking, or burning quota — and act without switching windows." />
 
-/* ambient glow, hero only */
-.glowwrap{position:relative;isolation:isolate}
-.glow{position:absolute;left:50%;top:-16rem;width:min(92vw,62rem);height:38rem;
-      transform:translateX(-50%);pointer-events:none;z-index:-1;
-      background:
-        radial-gradient(48% 46% at 50% 42%, rgba(56,189,248,.20), transparent 70%),
-        radial-gradient(38% 40% at 28% 58%, rgba(52,211,153,.13), transparent 72%),
-        radial-gradient(42% 38% at 74% 52%, rgba(99,102,241,.15), transparent 74%);
-      filter:blur(14px)}
-.gridlines{position:absolute;inset:-12rem 0 auto;height:46rem;pointer-events:none;z-index:-2;
-  background-image:linear-gradient(rgba(56,189,248,.045) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(56,189,248,.045) 1px,transparent 1px);
-  background-size:66px 66px;
-  mask-image:radial-gradient(60% 55% at 50% 30%,#000 30%,transparent 78%);
-  -webkit-mask-image:radial-gradient(60% 55% at 50% 30%,#000 30%,transparent 78%)}
+  <meta name="theme-color" content="#0B0D11" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Agent Island" />
+  <meta property="og:description" content="Every coding agent you run, in the notch you already have. Claude Code, Codex and Cursor in one panel — jump to the exact terminal tab, approve and answer without leaving it." />
+  <meta property="og:image" content="/assets/panel.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Agent Island" />
+  <meta name="twitter:description" content="Every coding agent you run, in the notch you already have." />
+  <meta name="twitter:image" content="/assets/panel.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0D11'/%3E%3Cg fill='%234DA8FF'%3E%3Crect x='7' y='17' width='2.6' height='8' rx='1'/%3E%3Crect x='11' y='13' width='2.6' height='12' rx='1'/%3E%3Crect x='15' y='9' width='2.6' height='16' rx='1'/%3E%3Crect x='19' y='14' width='2.6' height='11' rx='1'/%3E%3Crect x='23' y='19' width='2.6' height='6' rx='1'/%3E%3C/g%3E%3C/svg%3E" />
 
-/* nav */
-header{padding-block:20px 0;position:relative;z-index:2}
-.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.022em;font-size:1.03rem}
-.bar .sp{flex:1}
-.bar a.nav{color:var(--ink-dim);text-decoration:none;font-size:.87rem;font-weight:500;transition:.15s}
-.bar a.nav:hover{color:var(--ink)}
-@media (max-width:620px){.bar a.nav:not(.keep){display:none}}
+  <!-- Fonts: Google Fonts via <link>; every font-family below has a real fallback stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-/* hero */
-.hero{text-align:center;padding-block:58px 0}
-.eyebrow{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.72rem;
-  letter-spacing:.02em;color:var(--ink-dim);border:1px solid var(--line);background:rgba(13,20,36,.7);
-  border-radius:100px;padding:.32rem .78rem;margin-bottom:22px}
-.eyebrow .d{width:5px;height:5px;border-radius:50%;background:var(--mint);
-  box-shadow:0 0 0 3px rgba(52,211,153,.16)}
-h1{font-size:clamp(2.15rem,6vw,4.05rem);line-height:1.02;letter-spacing:-.042em;font-weight:800;
-   margin:0 0 20px;text-wrap:balance}
-h1 .grad{background:linear-gradient(104deg,var(--sky) 6%,#818cf8 52%,var(--mint) 96%);
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-.tag{font-size:clamp(1rem,2.2vw,1.2rem);color:var(--ink-dim);max-width:41rem;margin:0 auto 26px;text-wrap:balance}
-.cta{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:.72rem 1.3rem;border-radius:9px;
-  font-size:.92rem;font-weight:600;text-decoration:none;border:1px solid transparent;transition:.16s}
-.btn.primary{background:linear-gradient(180deg,var(--sky),var(--sky-deep));color:#04121f;
-  box-shadow:0 8px 26px -10px rgba(56,189,248,.6)}
-.btn.primary:hover{transform:translateY(-1px);box-shadow:0 12px 30px -10px rgba(56,189,248,.72)}
-.btn.ghost{background:rgba(17,26,45,.8);color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:#2d4266}
-.meta{font-family:var(--mono);font-size:.74rem;color:var(--ink-faint)}
+  <style>
+    /* ==========================================================
+       PALETTE — every color on the page is defined here, once.
+       ========================================================== */
+    :root {
+      --bg:            #0B0D11;   /* page background              */
+      --panel:         #0E1117;   /* the notch panel              */
+      --surface:       #12161D;   /* cards, framed panels         */
+      --surface-2:     #171C25;   /* elevated panels              */
+      --code-bg:       #070910;   /* terminal/code blocks         */
+      --border:        #1E242E;   /* hairline borders             */
+      --border-strong: #2E3643;   /* hover / emphasized borders   */
+      --text:          #E7EAF0;   /* primary text                 */
+      --muted:         #8B94A5;   /* secondary text               */
+      --faint:         #5A6273;   /* metadata, timestamps         */
 
-/* video */
-.demo{padding-block:40px 0}
-.frame{position:relative;border:1px solid var(--line);border-radius:15px;overflow:hidden;
-  background:#05070d;box-shadow:0 34px 80px -34px rgba(0,0,0,.92),0 0 0 1px rgba(56,189,248,.06)}
-.chrome{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line-soft);
-  background:linear-gradient(180deg,rgba(23,34,56,.75),rgba(13,20,36,.4))}
-.dot{width:9px;height:9px;border-radius:50%;background:#28344d}
-.chrome .lbl{margin-left:9px;font-family:var(--mono);font-size:.7rem;color:var(--ink-faint)}
-.slot{position:relative;aspect-ratio:844/396;width:100%;display:block;background:#05070d}
-.slot img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;opacity:.34}
-.slotover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:13px;text-align:center;padding:22px;
-  background:linear-gradient(180deg,rgba(7,11,22,.5),rgba(7,11,22,.9))}
-.play{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;
-  border:1px solid rgba(56,189,248,.38);background:rgba(56,189,248,.1)}
-.play svg{margin-left:3px}
-.slotover .t{font-weight:650;font-size:1.02rem}
-.slotover .s{font-family:var(--mono);font-size:.75rem;color:var(--ink-faint);max-width:31rem;line-height:1.6}
-.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(12.5rem,1fr));gap:10px;margin-top:18px}
-.chap{background:var(--raise);border:1px solid var(--line-soft);border-radius:11px;padding:.85rem .95rem}
-.chap .n{font-family:var(--mono);font-size:.67rem;color:var(--sky);font-weight:700;letter-spacing:.04em}
-.chap .h{font-weight:620;font-size:.9rem;margin-top:.2rem}
-.chap .d{font-size:.8rem;color:var(--ink-faint);margin-top:.22rem;line-height:1.5}
+      --accent:        #4DA8FF;   /* identity: links, focus, CTA  */
+      --accent-ink:    #04182E;   /* text on filled accent        */
+      --accent-dim:    #0D1E33;   /* accent-tinted fill           */
+      --accent-edge:   #1E3F63;   /* accent-tinted border         */
 
-/* sections */
-section{padding-block:76px}
-.shead{margin-bottom:30px}
-.kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--sky);margin-bottom:9px}
-h2{font-size:clamp(1.5rem,3.4vw,2.2rem);letter-spacing:-.03em;font-weight:750;margin:0 0 9px;text-wrap:balance}
-.lede{color:var(--ink-dim);max-width:45rem;margin:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:12px}
-.card{background:var(--raise);border:1px solid var(--line-soft);border-radius:12px;padding:1.15rem 1.2rem;
-  transition:.17s}
-.card:hover{border-color:var(--line);background:var(--raise-2);transform:translateY(-2px)}
-.card h3{font-size:.96rem;font-weight:650;margin:0 0 .35rem;letter-spacing:-.012em}
-.card p{font-size:.86rem;color:var(--ink-faint);margin:0;line-height:1.56}
-code{font-family:var(--mono);font-size:.85em;background:rgba(56,189,248,.09);color:#9ed8f7;
-  padding:.1em .36em;border-radius:5px;border:1px solid rgba(56,189,248,.16)}
+      --green:         #3DD68C;   /* LIVE activity + healthy only */
+      --green-ink:     #04220F;   /* text on filled green         */
+      --green-dim:     #0C2318;   /* green-tinted fill            */
+      --green-edge:    #1C4531;   /* green-tinted border          */
+      --amber:         #E5B25A;   /* warning: burn rate, asked-once */
+      --amber-dim:     #251D0D;   /* amber-tinted fill            */
+      --amber-edge:    #4A3A1A;   /* amber-tinted border          */
+      --rose:          #F2708A;   /* ended / failed / died        */
+      --rose-dim:      #2A1219;   /* rose-tinted fill             */
+      --rose-edge:     #532430;   /* rose-tinted border           */
 
-/* shot */
-.shot{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#05070d;margin-top:22px;
-  box-shadow:0 26px 60px -32px rgba(0,0,0,.9)}
-.shot img{width:100%;display:block}
-.cap{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);text-align:center;margin-top:11px}
+      --sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
-/* table */
-.tablewrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--raise)}
-table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.86rem}
-th{text-align:left;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-faint);
-  font-weight:600;padding:.68rem .85rem;border-bottom:1px solid var(--line-soft)}
-td{padding:.68rem .85rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
-tr:last-child td{border-bottom:0}
-.mono{font-family:var(--mono);font-size:.8rem;color:var(--ink-dim)}
-.pill{display:inline-block;font-family:var(--mono);font-size:.67rem;padding:.14rem .46rem;border-radius:5px;
-  border:1px solid var(--line);color:var(--ink-faint);white-space:nowrap}
-.pill.ok{color:var(--mint);border-color:rgba(52,211,153,.32);background:rgba(52,211,153,.08)}
+      --maxw: 1020px;
+      --radius: 10px;
+    }
 
-/* code blocks */
-pre{background:#05070d;border:1px solid var(--line-soft);border-radius:12px;padding:1.05rem 1.15rem;
-  overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.7;margin:0;color:var(--ink)}
-pre .c{color:#54648a}
-pre .g{color:var(--mint)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-@media (max-width:660px){.two{grid-template-columns:1fr}}
-h4{font-size:.86rem;font-weight:600;margin:0 0 .55rem;color:var(--ink-dim);font-family:var(--mono)}
-.callout{border-left:2px solid var(--amber);padding:.6rem 0 .6rem 1rem;color:var(--ink-dim);
-  font-size:.86rem;margin-top:17px;line-height:1.6}
-.callout b{color:var(--ink)}
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-/* strip */
-.strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:26px}
-.strip span{font-family:var(--mono);font-size:.73rem;color:var(--ink-dim);border:1px solid var(--line-soft);
-  background:var(--raise);border-radius:100px;padding:.34rem .8rem}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* closer */
-.closer{text-align:center;border:1px solid var(--line-soft);border-radius:16px;padding:46px 24px;
-  background:radial-gradient(70% 120% at 50% 0%,rgba(56,189,248,.11),transparent 68%),var(--raise)}
-.closer h2{margin-bottom:12px}
+    ::selection { background: var(--accent); color: var(--accent-ink); }
 
-footer{border-top:1px solid var(--line-soft);padding-block:28px 46px;margin-top:64px}
-.foot{display:flex;gap:15px;flex-wrap:wrap;align-items:center;font-size:.83rem;color:var(--ink-faint)}
-.foot a{color:var(--ink-faint);text-decoration:none}
-.foot a:hover{color:var(--ink)}
-.foot .sp{flex:1}
-:focus-visible{outline:2px solid var(--sky);outline-offset:3px;border-radius:5px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}.card:hover,.btn.primary:hover{transform:none}}
-</style>
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    code, kbd { font-family: var(--mono); }
+
+    .wrap {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 10px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      z-index: 100;
+      border: 1px solid var(--border-strong);
+    }
+    .skip-link:focus { left: 8px; top: 8px; }
+
+    /* ============================== nav ============================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 12, 11, 0.86);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      height: 54px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+    .brand-mark {
+      width: 24px;
+      height: 15px;
+      border: 1px solid var(--border-strong);
+      border-radius: 5px;
+      position: relative;
+      flex: none;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 11px;
+      height: 5px;
+      background: var(--bg);
+      border: 1px solid var(--border-strong);
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      transition: color 150ms ease-out;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.github {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-family: var(--mono);
+      font-size: 12px;
+      transition: border-color 150ms ease-out, background-color 150ms ease-out;
+    }
+    .nav-links a.github:hover { border-color: var(--border-strong); background: var(--surface); }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 6px 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 8px 20px 16px;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a {
+      display: block;
+      padding: 9px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .mobile-menu a:hover { color: var(--text); }
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+    }
+
+    /* ============================== hero ============================== */
+    .hero { padding: 64px 0 40px; }
+    .agent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+    .agent-pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+    }
+    .agent-pill .sep { color: var(--border-strong); }
+
+    h1 {
+      font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      font-weight: 600;
+      margin: 20px 0 0;
+      max-width: 19ch;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 58ch;
+      margin: 16px 0 0;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 7px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 500;
+      font-family: var(--sans);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { background: #6FBEFF; color: var(--accent-ink); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .btn-secondary:hover { border-color: var(--faint); background: var(--surface); }
+    .hero-meta {
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--faint);
+    }
+    .hero-meta span + span::before {
+      content: "·";
+      margin: 0 9px;
+      color: var(--border-strong);
+    }
+
+    /* ==========================================================
+       HERO PANEL — a working recreation of the Agent Island UI.
+       Real DOM, no images. It loops through four states driven by
+       the `data-state` attribute on #agent-panel (see the inline
+       script at the bottom of this file):
+         state 1 — an agent finishes its run
+         state 2 — an agent asks a question (countdown bar)
+         state 3 — jump to an agent's terminal tab
+         state 4 — expand a row, read the thread, reply inline
+       To wire it to real data later: replace the .row list items
+       and the .panel-head numbers with live values; the state
+       classes are only for the demo loop.
+       ========================================================== */
+    .panel-shell {
+      margin-top: 46px;
+      max-width: 860px;
+    }
+    .panel-notch {
+      width: 168px;
+      height: 19px;
+      margin: 0 auto -1px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 0 0 11px 11px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .panel-notch::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+      font-size: 13px;
+      overflow: hidden;
+    }
+
+    /* --- header strip: quota, burn rate, session counts --- */
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .panel-head::-webkit-scrollbar { display: none; }
+    .ph-window b { color: var(--text); font-weight: 600; }
+    .ph-window i { font-style: normal; color: var(--faint); margin-left: 5px; }
+    .ph-burn { color: var(--amber); display: inline-flex; align-items: center; gap: 5px; }
+    .ph-burn svg { flex: none; }
+    .ph-proj { color: var(--faint); }
+    .ph-sep {
+      width: 1px;
+      height: 12px;
+      background: var(--border-strong);
+      flex: none;
+      margin: 0 2px;
+    }
+    .ph-spacer { flex: 1; }
+    .ph-pill {
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 10.5px;
+      flex: none;
+    }
+    .ph-pill.working {
+      color: var(--accent);
+      background: var(--green-dim);
+      border: 1px solid var(--green-edge);
+    }
+    .ph-pill.blocked {
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .ph-total { color: var(--faint); }
+    .ph-pill em { font-style: normal; }
+    .ph-pill .cw4 { display: none; }
+    [data-state="4"] .ph-pill .cw4 { display: inline; }
+    [data-state="4"] .ph-pill .cw3 { display: none; }
+
+    /* --- agent rows --- */
+    .rows { list-style: none; margin: 0; padding: 0; }
+    .row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      column-gap: 12px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 300ms ease-out;
+    }
+    .row:last-child { border-bottom: none; }
+
+    .row-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding-top: 1px;
+    }
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: block;
+    }
+    /* four-bar equaliser: runs while the agent is working */
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+    .eq i {
+      width: 3px;
+      border-radius: 1px;
+      background: var(--green);
+      height: 30%;
+      animation: eq 0.9s ease-in-out infinite;
+    }
+    .eq i:nth-child(1) { animation-delay: 0s; }
+    .eq i:nth-child(2) { animation-delay: 0.22s; }
+    .eq i:nth-child(3) { animation-delay: 0.45s; }
+    .eq i:nth-child(4) { animation-delay: 0.11s; }
+    @keyframes eq {
+      0%, 100% { height: 22%; }
+      50% { height: 100%; }
+    }
+    /* an agent that is not working: bars parked low and dim */
+    .eq.idle i {
+      animation: none;
+      height: 18%;
+      background: var(--border-strong);
+    }
+
+    .row-main { min-width: 0; }
+    .row-line1 { display: flex; align-items: baseline; min-width: 0; }
+    .proj { font-weight: 500; color: var(--text); }
+    .dot-sep { color: var(--faint); margin: 0 7px; }
+    .sess { font-weight: 600; color: #FFFFFF; }
+    .row-line2 {
+      color: var(--muted);
+      font-size: 12.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .row-line2 b { color: var(--faint); font-weight: 400; }
+    .row-line3 {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .row-line3 .st-busy { color: var(--muted); }
+    .row-line3 .st-done { color: var(--green); display: none; }
+    .row-line3 .st-blocked { color: var(--amber); }
+    .row-line3 .tool b { color: var(--muted); font-weight: 600; margin-right: 6px; }
+    .row-line3 .tool { display: none; }
+    .row-line3 .sep4 { display: none; }
+    [data-state="4"] .row-line3 .sep4 { display: inline; }
+
+    .row-right {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding-top: 2px;
+      white-space: nowrap;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 7px;
+      transition: border-color 200ms ease-out, color 200ms ease-out;
+    }
+    .tag.vendor { color: var(--text); }
+    .ring-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+    .ring { display: block; }
+    .ring .track { stroke: var(--border-strong); }
+    .ring .fill { stroke: var(--green); }
+    .ring.hot .fill { stroke: var(--amber); }
+    .ts { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+    .jump {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--faint);
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out;
+    }
+    .jump:hover { color: var(--text); border-color: var(--border-strong); }
+
+    /* --- state 1: infra/terraform-plan finishes its run --- */
+    [data-state="1"] .row-c .eq i,
+    [data-state="2"] .row-c .eq i,
+    [data-state="3"] .row-c .eq i {
+      animation: none;
+      height: 18%;
+      background: var(--border-strong);
+    }
+    [data-state="1"] .row-c .st-busy,
+    [data-state="2"] .row-c .st-busy,
+    [data-state="3"] .row-c .st-busy,
+    [data-state="1"] .row-c .tool,
+    [data-state="2"] .row-c .tool,
+    [data-state="3"] .row-c .tool { display: none; }
+    [data-state="1"] .row-c .st-done,
+    [data-state="2"] .row-c .st-done,
+    [data-state="3"] .row-c .st-done { display: inline; }
+    [data-state="4"] .row-c .tool { display: inline; }
+
+    /* --- state 3: jump to dotfiles/nvim-config's terminal tab --- */
+    .focus-tag {
+      display: none;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+    }
+    [data-state="3"] .row-d {
+      background: rgba(61, 214, 140, 0.05);
+    }
+    [data-state="3"] .row-d .jump {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    [data-state="3"] .row-d .tag.term {
+      border-color: var(--accent-edge);
+      color: var(--accent);
+    }
+    [data-state="3"] .row-d .focus-tag { display: inline; }
+
+    /* --- slide-down regions (question card / conversation) --- */
+    .reveal {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .reveal > div {
+      overflow: hidden;
+      min-height: 0;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 300ms ease-out, transform 380ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    [data-state="2"] .q-reveal { grid-template-rows: 1fr; }
+    [data-state="2"] .q-reveal > div { opacity: 1; transform: none; }
+    [data-state="4"] .c-reveal { grid-template-rows: 1fr; }
+    [data-state="4"] .c-reveal > div { opacity: 1; transform: none; }
+
+    /* the question card — the product's best feature */
+    .q-card {
+      margin: 2px 0 10px 46px;
+      background: var(--surface-2);
+      border: 1px solid var(--accent-edge);
+      border-radius: 9px;
+      padding: 11px 13px 12px;
+    }
+    .q-label {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 6px;
+    }
+    .q-text {
+      margin: 0;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .q-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .q-opt {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: border-color 150ms ease-out, color 150ms ease-out;
+    }
+    .q-opt:hover { border-color: var(--accent-edge); color: var(--accent); }
+    .q-opt.free { color: var(--faint); }
+    .q-count {
+      margin-top: 11px;
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .q-bar {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+    [data-state="2"] .q-bar { animation: deplete 3.5s linear forwards; }
+    @keyframes deplete {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    /* the expanded conversation + inline reply */
+    .c-card {
+      margin: 2px 0 10px 46px;
+      border-top: 1px solid var(--border);
+      padding: 10px 0 2px;
+    }
+    .c-card p {
+      margin: 0 0 7px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .c-card p b {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-right: 8px;
+    }
+    .c-card p b.who-agent { color: var(--accent); }
+    .c-card p b.who-you { color: var(--faint); }
+    .reply {
+      display: flex;
+      gap: 6px;
+      margin-top: 9px;
+    }
+    .reply input {
+      flex: 1;
+      min-width: 0;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 7px 10px;
+      outline: none;
+    }
+    .reply input:focus { border-color: var(--accent-edge); }
+    .reply input::placeholder { color: var(--faint); }
+    .reply button {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    /* state dots beneath the panel */
+    .panel-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .pdot {
+      width: 22px;
+      height: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      padding: 0;
+    }
+    .pdot::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: background-color 200ms ease-out, transform 200ms ease-out;
+    }
+    .pdot:hover::after { background: var(--faint); }
+    .pdot.active::after {
+      background: var(--accent);
+      transform: translate(-50%, -50%) scale(1.25);
+    }
+    .panel-caption {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--faint);
+      margin-top: 8px;
+    }
+
+    /* phone: the panel simplifies instead of shrinking */
+    @media (max-width: 640px) {
+      .tag.model, .tag.term, .focus-tag { display: none; }
+      .ring-wrap { display: none; }
+      .ph-second, .panel-head .ph-sep { display: none; }
+      .q-card, .c-card { margin-left: 0; }
+      .row { grid-template-columns: 28px minmax(0, 1fr) auto; column-gap: 10px; }
+      .avatar { width: 24px; height: 24px; }
+      .eq { height: 10px; }
+    }
+    /* ======================== end hero panel ======================== */
+
+    /* ============================ sections ============================ */
+    section { padding: 56px 0; }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 12px;
+    }
+    h2 {
+      font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+      letter-spacing: -0.025em;
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0;
+      max-width: 30ch;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 62ch;
+      margin: 10px 0 0;
+    }
+
+    /* --- the problem: pull-quote, deliberately not cards --- */
+    .problem { border-top: 1px solid var(--border); }
+    .pull {
+      margin: 0;
+      font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      font-weight: 500;
+      max-width: 34ch;
+    }
+    .pull span { color: var(--faint); }
+    .pull .hl { color: var(--text); }
+
+    /* --- what it shows you: 3 lead + 6 secondary --- */
+    .lead-caps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+      list-style: none;
+      padding: 0;
+    }
+    .lead-cap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 22px;
+      transition: border-color 150ms ease-out;
+    }
+    .lead-cap:hover { border-color: var(--border-strong); }
+    .lead-cap h3 {
+      margin: 0 0 8px;
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .lead-cap p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .lead-cap .cap-meta {
+      display: block;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--faint);
+    }
+    .lead-cap .cap-meta b { color: var(--accent); font-weight: 500; }
+    .lead-cap .cap-meta.died b { color: var(--rose); }
+    .cap-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 32px;
+      margin-top: 30px;
+      list-style: none;
+      padding: 0;
+    }
+    .cap-list li {
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .cap-list b {
+      color: var(--text);
+      font-weight: 600;
+      margin-right: 7px;
+    }
+    .cap-list code {
+      font-size: 11px;
+      color: var(--text);
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 5px;
+    }
+    @media (max-width: 820px) { .lead-caps { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .cap-list { grid-template-columns: 1fr; } }
+
+    /* --- what it lets you do: one lead + 5 compact --- */
+    .act-lead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 28px;
+      align-items: center;
+      margin-top: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 26px;
+    }
+    .act-lead h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .act-lead p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .act-lead .cap-meta {
+      display: block;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--faint);
+    }
+    .act-lead .cap-meta b { color: var(--accent); font-weight: 500; }
+    /* static miniature of the question card, for the lead item */
+    .mini-q {
+      background: var(--panel);
+      border: 1px solid var(--accent-edge);
+      border-radius: 9px;
+      padding: 12px 14px 13px;
+    }
+    .mini-q .q-bar { animation: none; width: 62%; }
+    @media (max-width: 760px) { .act-lead { grid-template-columns: 1fr; } }
+
+    /* --- how it works --- */
+    .howto p {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 68ch;
+      margin: 12px 0 0;
+    }
+    .howto p code, .note code, .install-note code {
+      font-family: var(--mono);
+      font-size: 0.86em;
+      color: var(--text);
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      white-space: nowrap;
+    }
+    .table-scroll {
+      margin-top: 28px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      min-width: 660px;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: var(--panel);
+    }
+    thead th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 11px 16px;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background-color 120ms ease-out; }
+    tbody tr:hover { background: var(--surface); }
+    tbody td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+    td code {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .perm {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 2px 10px;
+      white-space: nowrap;
+    }
+    .perm-none {
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-edge);
+    }
+    .perm-once {
+      color: var(--amber);
+      background: var(--amber-dim);
+      border: 1px solid var(--amber-edge);
+    }
+    .note {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 76ch;
+    }
+    .note strong { color: var(--text); font-weight: 600; }
+
+    /* --- install --- */
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    @media (max-width: 720px) { .install-grid { grid-template-columns: 1fr; } }
+    .code-block {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--code-bg);
+      overflow: hidden;
+      min-width: 0;
+    }
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-head span {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .copy-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: color 150ms ease-out, border-color 150ms ease-out;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .copy-btn.copied { color: var(--accent); border-color: var(--accent-edge); }
+    .code-block pre {
+      margin: 0;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.9;
+      color: var(--text);
+    }
+    .code-block pre .prompt { color: var(--accent); user-select: none; }
+    .install-note {
+      margin-top: 16px;
+      border: 1px solid var(--amber-edge);
+      border-radius: 8px;
+      background: var(--amber-dim);
+      padding: 13px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 76ch;
+    }
+    .install-note strong { color: var(--amber); font-weight: 600; }
+    .claim-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+      list-style: none;
+      padding: 0;
+    }
+    .claim-pills li {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 5px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .claim-pills li::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+    }
+
+    /* --- closing CTA --- */
+    .cta-panel {
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      background: var(--surface-2);
+      padding: 42px 34px;
+      max-width: 700px;
+    }
+    .cta-panel p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 10px 0 0;
+      max-width: 48ch;
+    }
+    .cta-panel .hero-actions { margin-top: 22px; }
+
+    /* --- footer --- */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 26px 0 36px;
+    }
+    .footer-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--faint);
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .footer-links a { color: var(--muted); transition: color 150ms ease-out; }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 560px) {
+      section { padding: 44px 0; }
+      .hero { padding: 48px 0 32px; }
+      .cta-panel { padding: 32px 22px; }
+    }
+
+    /* reduced motion: no loops, no transitions; JS pins state 2 statically */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+      .eq i { animation: none; height: 55%; }
+      [data-state="2"] .q-bar { animation: none; width: 45%; }
+    }
+  </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<div class="glowwrap">
-  <div class="glow" aria-hidden="true"></div>
-  <div class="gridlines" aria-hidden="true"></div>
-  <div class="wrap">
-    <header>
-      <div class="bar">
-        <div class="logo">
-          <svg width="23" height="23" viewBox="0 0 32 32" aria-hidden="true">
-            <rect width="32" height="32" rx="7" fill="#0d1424"/>
-            <g fill="#38bdf8">
-              <rect x="7" y="17" width="2.6" height="8" rx="1"/><rect x="11" y="13" width="2.6" height="12" rx="1"/>
-              <rect x="15" y="9" width="2.6" height="16" rx="1"/><rect x="19" y="14" width="2.6" height="11" rx="1"/>
-              <rect x="23" y="19" width="2.6" height="6" rx="1"/>
-            </g>
-          </svg>
-          Agent Island
-        </div>
-        <div class="sp"></div>
-        <a class="nav" href="#demo">Demo</a>
-        <a class="nav" href="#see">Features</a>
-        <a class="nav" href="#jump">The jump</a>
-        <a class="nav keep" href="#install">Install</a>
-        <a class="nav keep" href="https://github.com/Tiwari1999/Agent-Island">GitHub</a>
-      </div>
-    </header>
-
-    <div class="hero">
-      <div class="eyebrow"><span class="d"></span> Claude Code · Codex · Cursor</div>
-      <h1>Every coding agent you run,<br><span class="grad">in the notch you already have.</span></h1>
-      <p class="tag">Which one is blocked? Which is quietly burning the 5-hour window? Which of nine identical terminal tabs did that notification come from? Each agent knows its own answer, and none of them shows you.</p>
-      <div class="cta">
-        <a class="btn primary" href="https://github.com/Tiwari1999/Agent-Island">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-          View on GitHub
-        </a>
-        <a class="btn ghost" href="#install">Install</a>
-      </div>
-      <p class="meta">macOS 14+ · Swift 6 · no Xcode required · MIT · runs entirely on your machine</p>
+  <!-- ============================ NAV ============================ -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#" data-testid="nav-brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        Agent Island
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="#problem" data-testid="nav-link-problem">Why</a></li>
+          <li><a href="#shows" data-testid="nav-link-features">Features</a></li>
+          <li><a href="#how-it-works" data-testid="nav-link-how-it-works">How it works</a></li>
+          <li><a href="#install" data-testid="nav-link-install">Install</a></li>
+          <li>
+            <a class="github" href="https://github.com/Tiwari1999/Agent-Island" data-testid="nav-link-github">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" data-testid="nav-menu-toggle">menu</button>
     </div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile">
+      <a href="#problem" data-testid="mobile-link-problem">Why</a>
+      <a href="#shows" data-testid="mobile-link-features">Features</a>
+      <a href="#how-it-works" data-testid="mobile-link-how-it-works">How it works</a>
+      <a href="#install" data-testid="mobile-link-install">Install</a>
+      <a href="https://github.com/Tiwari1999/Agent-Island" data-testid="mobile-link-github">GitHub</a>
+    </nav>
+  </header>
 
-    <div class="demo" id="demo">
-      <div class="frame">
-        <div class="chrome">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="lbl">agent-island — walkthrough</span>
+  <main id="main">
+    <!-- ============================ HERO ============================ -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="agent-pill" data-testid="hero-agent-pill">
+          <span class="dot" aria-hidden="true"></span>
+          Claude Code <span class="sep">/</span> Codex <span class="sep">/</span> Cursor
+        </p>
+        <h1>Every coding agent you run, in the notch you already have.</h1>
+        <p class="lede">
+          Agent Island turns the MacBook notch into a live dashboard for your AI coding
+          agents. Which one is blocked, which one is asking, which one is burning
+          through its quota — answered without switching windows.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install" data-testid="hero-get-button">Get Agent Island</a>
+          <a class="btn btn-secondary" href="#install" data-testid="hero-install-button">Install instructions</a>
         </div>
-        <!-- VIDEO SLOT — replace this entire .slot block with:
-             <video class="slot" src="/assets/demo.mp4" autoplay muted loop playsinline
-                    poster="/assets/panel.png"></video> -->
-        <div class="slot">
-          <img src="/assets/panel.png" alt="The Agent Island panel: a quota header above four live agent sessions, each with its model, terminal, context ring and current tool call">
-          <div class="slotover">
-            <div class="play" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="#38bdf8"><path d="M4 2.5v11l9-5.5-9-5.5Z"/></svg>
+        <p class="hero-meta" data-testid="hero-meta">
+          <span>macOS 14+</span><span>Swift / AppKit</span><span>MIT licence</span>
+        </p>
+
+        <!-- ============================================================
+             LIVE PANEL — the product, recreated in DOM. Not a screenshot.
+             Four demo states cycle on a timer (script at end of file);
+             dots below let a visitor jump between them.
+             To wire real data: swap the .row <li> items and the
+             .panel-head figures for live session values.
+             ============================================================ -->
+        <div class="panel-shell">
+          <div class="panel-notch" aria-hidden="true"></div>
+          <div class="panel" id="agent-panel" data-state="1" data-testid="hero-panel"
+               role="img" aria-label="Live demo of the Agent Island panel, cycling through four states: an agent finishing, an agent asking a question, jumping to a terminal tab, and replying inline.">
+
+            <!-- header strip: usage windows, burn rate, session counts -->
+            <div class="panel-head">
+              <span class="ph-window"><b>5h</b> 25% <i>2h42m</i></span>
+              <span class="ph-burn">
+                <svg width="9" height="11" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M5 0C4.6 2 2.9 3.1 2.1 4.8 1.4 6.2 1 7.3 1 8.4 1 10.4 2.8 12 5 12s4-1.6 4-3.6c0-1.1-.4-2.2-1.1-3.2C7.2 3.9 6.5 2.2 6.3.7 6 1.9 5.4 2.7 5 3.5 5 2.3 5 1.1 5 0Z"/></svg>
+                79%/h
+              </span>
+              <span class="ph-proj">full in 57m</span>
+              <span class="ph-sep" aria-hidden="true"></span>
+              <span class="ph-window ph-second"><b>7d</b> 15% <i>3d6h</i></span>
+              <span class="ph-spacer"></span>
+              <span class="ph-pill working"><em class="cw3">3</em><em class="cw4">4</em> working</span>
+              <span class="ph-pill blocked">2 blocked</span>
+              <span class="ph-total">8</span>
             </div>
-            <div class="t">Walkthrough coming shortly</div>
-            <div class="s">A short capture of the four moments below. The panel behind this is the real thing.</div>
+
+            <ul class="rows">
+              <!-- row A: working agent, Claude Code in Warp -->
+              <li class="row row-a">
+                <div class="row-left">
+                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#39414F"/><rect x="1" y="0" width="1" height="1" fill="#39414F"/><rect x="3" y="0" width="1" height="1" fill="#4C5668"/><rect x="1" y="1" width="1" height="1" fill="#4C5668"/><rect x="2" y="1" width="1" height="1" fill="#3DD68C"/><rect x="0" y="2" width="1" height="1" fill="#39414F"/><rect x="2" y="2" width="1" height="1" fill="#4C5668"/><rect x="3" y="3" width="1" height="1" fill="#39414F"/><rect x="1" y="3" width="1" height="1" fill="#4C5668"/></svg>
+                  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="row-main">
+                  <div class="row-line1"><span class="proj">PersonalProjects</span><span class="dot-sep">·</span><span class="sess">openGym</span></div>
+                  <div class="row-line2"><b>You:</b> crop the sprite sheet into 32px tiles and dedupe the borders</div>
+                  <div class="row-line3"><span class="tool" style="display:inline"><b>Bash</b>cd /tmp/crop</span></div>
+                </div>
+                <div class="row-right">
+                  <span class="tag vendor">Claude</span>
+                  <span class="tag model">Opus 5</span>
+                  <span class="tag term">Warp</span>
+                  <span class="ring-wrap">
+                    <svg class="ring" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="39.6 56.5" transform="rotate(-90 12 12)"/></svg>
+                    70%
+                  </span>
+                  <span class="ts">now</span>
+                  <button class="jump" aria-label="Jump to openGym terminal tab" data-testid="jump-row-a"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 8 L8 2 M3.5 2 H8 V6.5"/></svg></button>
+                </div>
+              </li>
+
+              <!-- row B: working agent that asks a question (state 2) and expands (state 4) -->
+              <li class="row row-b">
+                <div class="row-left">
+                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="2" y="0" width="1" height="1" fill="#4C5668"/><rect x="0" y="1" width="1" height="1" fill="#39414F"/><rect x="3" y="1" width="1" height="1" fill="#39414F"/><rect x="1" y="2" width="1" height="1" fill="#3DD68C"/><rect x="2" y="2" width="1" height="1" fill="#39414F"/><rect x="0" y="3" width="1" height="1" fill="#4C5668"/><rect x="3" y="3" width="1" height="1" fill="#4C5668"/><rect x="1" y="0" width="1" height="1" fill="#39414F"/></svg>
+                  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="row-main">
+                  <div class="row-line1"><span class="proj">work</span><span class="dot-sep">·</span><span class="sess">api-gateway</span></div>
+                  <div class="row-line2"><b>You:</b> fix the flaky health-check test without touching prod config</div>
+                  <div class="row-line3"><span class="st-busy">busy</span><span class="dot-sep">·</span><span class="tool" style="display:inline"><b>Edit</b>src/routes/health.ts</span></div>
+                </div>
+                <div class="row-right">
+                  <span class="tag vendor">Claude</span>
+                  <span class="tag model">Sonnet 5</span>
+                  <span class="tag term">iTerm2</span>
+                  <span class="ring-wrap">
+                    <svg class="ring" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="23.2 56.5" transform="rotate(-90 12 12)"/></svg>
+                    41%
+                  </span>
+                  <span class="ts">1m</span>
+                  <button class="jump" aria-label="Jump to api-gateway terminal tab" data-testid="jump-row-b"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 8 L8 2 M3.5 2 H8 V6.5"/></svg></button>
+                </div>
+
+                <!-- question card, revealed in state 2 -->
+                <div class="reveal q-reveal">
+                  <div>
+                    <div class="q-card" data-testid="question-card">
+                      <p class="q-label">question · api-gateway</p>
+                      <p class="q-text">The health-check test passes locally but fails on CI. Pin the rustls version, or mark the test flaky and move on?</p>
+                      <div class="q-options">
+                        <button class="q-opt" data-testid="q-opt-1">Pin rustls to 0.23</button>
+                        <button class="q-opt" data-testid="q-opt-2">Mark test flaky</button>
+                        <button class="q-opt free" data-testid="q-opt-3">Something else…</button>
+                      </div>
+                      <div class="q-count" aria-hidden="true"><i class="q-bar"></i></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- conversation + inline reply, revealed in state 4 -->
+                <div class="reveal c-reveal">
+                  <div>
+                    <div class="c-card" data-testid="conversation-card">
+                      <p><b class="who-agent">agent</b>Rustls is pinned. The route table change is staged, apply is held pending your review.</p>
+                      <p><b class="who-you">you</b>Hold apply until I check the CIDR overlap with the staging VPC.</p>
+                      <p><b class="who-agent">agent</b>Acknowledged. Waiting; no further writes until you confirm.</p>
+                      <div class="reply">
+                        <input type="text" placeholder="Reply to api-gateway…" aria-label="Reply to api-gateway" data-testid="reply-input" />
+                        <button type="button" data-testid="reply-send">Send</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <!-- row C: finishes its run in state 1 -->
+              <li class="row row-c" data-testid="row-finishes">
+                <div class="row-left">
+                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#4C5668"/><rect x="3" y="0" width="1" height="1" fill="#39414F"/><rect x="1" y="1" width="1" height="1" fill="#39414F"/><rect x="2" y="1" width="1" height="1" fill="#39414F"/><rect x="0" y="2" width="1" height="1" fill="#3DD68C"/><rect x="3" y="2" width="1" height="1" fill="#4C5668"/><rect x="1" y="3" width="1" height="1" fill="#39414F"/><rect x="2" y="3" width="1" height="1" fill="#4C5668"/></svg>
+                  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="row-main">
+                  <div class="row-line1"><span class="proj">infra</span><span class="dot-sep">·</span><span class="sess">terraform-plan</span></div>
+                  <div class="row-line2"><b>You:</b> plan the VPC peering change and hold before apply</div>
+                  <div class="row-line3">
+                    <span class="st-busy">busy</span><span class="dot-sep sep4" aria-hidden="true">·</span>
+                    <span class="st-done">finished · exit 0</span>
+                    <span class="tool"><b>Bash</b>terraform plan -out=tf.plan</span>
+                  </div>
+                </div>
+                <div class="row-right">
+                  <span class="tag vendor">Codex</span>
+                  <span class="tag model">gpt-6</span>
+                  <span class="tag term">kitty</span>
+                  <span class="ring-wrap">
+                    <svg class="ring hot" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="35 56.5" transform="rotate(-90 12 12)"/></svg>
+                    62%
+                  </span>
+                  <span class="ts">2m</span>
+                  <button class="jump" aria-label="Jump to terraform-plan terminal tab" data-testid="jump-row-c"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 8 L8 2 M3.5 2 H8 V6.5"/></svg></button>
+                </div>
+              </li>
+
+              <!-- row D: blocked agent; the jump target in state 3 -->
+              <li class="row row-d" data-testid="row-jump">
+                <div class="row-left">
+                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="1" y="0" width="1" height="1" fill="#39414F"/><rect x="2" y="0" width="1" height="1" fill="#4C5668"/><rect x="0" y="1" width="1" height="1" fill="#4C5668"/><rect x="3" y="1" width="1" height="1" fill="#39414F"/><rect x="1" y="2" width="1" height="1" fill="#4C5668"/><rect x="2" y="2" width="1" height="1" fill="#39414F"/><rect x="0" y="3" width="1" height="1" fill="#39414F"/><rect x="3" y="3" width="1" height="1" fill="#E5B25A"/></svg>
+                  <span class="eq idle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="row-main">
+                  <div class="row-line1"><span class="proj">dotfiles</span><span class="dot-sep">·</span><span class="sess">nvim-config</span></div>
+                  <div class="row-line2"><b>You:</b> migrate the LSP setup to the new vim.lsp.config API</div>
+                  <div class="row-line3"><span class="st-blocked">blocked · waiting on you</span></div>
+                </div>
+                <div class="row-right">
+                  <span class="tag vendor">Cursor</span>
+                  <span class="tag model">Composer 1</span>
+                  <span class="tag term">WezTerm</span>
+                  <span class="focus-tag">pane focused</span>
+                  <span class="ring-wrap">
+                    <svg class="ring" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10.2 56.5" transform="rotate(-90 12 12)"/></svg>
+                    18%
+                  </span>
+                  <span class="ts">6m</span>
+                  <button class="jump" aria-label="Jump to nvim-config terminal tab" data-testid="jump-row-d"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 8 L8 2 M3.5 2 H8 V6.5"/></svg></button>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- state dots: click to jump to a state -->
+          <div class="panel-dots" role="group" aria-label="Demo state selector">
+            <button class="pdot active" data-goto="1" aria-label="Show state: an agent finishes" data-testid="panel-dot-1"></button>
+            <button class="pdot" data-goto="2" aria-label="Show state: an agent asks a question" data-testid="panel-dot-2"></button>
+            <button class="pdot" data-goto="3" aria-label="Show state: jump to a terminal tab" data-testid="panel-dot-3"></button>
+            <button class="pdot" data-goto="4" aria-label="Show state: expand and reply inline" data-testid="panel-dot-4"></button>
+          </div>
+          <p class="panel-caption">live demo · cycles every ~4s · click a dot to hold a state</p>
+        </div>
+        <!-- ====================== end live panel ====================== -->
+      </div>
+    </section>
+
+    <!-- ======================== THE PROBLEM ======================== -->
+    <section class="problem" id="problem" aria-labelledby="problem-heading">
+      <div class="wrap">
+        <h2 id="problem-heading" class="skip-link" tabindex="-1">The problem</h2>
+        <p class="pull" data-testid="problem-pull">
+          Run five to ten agents at once and the bottleneck stops being the agents.
+          <span>It becomes you. Which one is blocked. Which one is burning quota.
+          <span class="hl">Which of nine identical terminal tabs that notification came from.</span></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== WHAT IT SHOWS YOU ===================== -->
+    <section id="shows" aria-labelledby="shows-heading">
+      <div class="wrap">
+        <p class="section-label">What it shows you</p>
+        <h2 id="shows-heading">Nine signals, three that matter most</h2>
+
+        <ul class="lead-caps">
+          <li class="lead-cap" data-testid="lead-cap-1">
+            <h3>Context-window pressure, per session</h3>
+            <p>Each session reports how full its context window is, so you compact before hitting the limit — not after the agent starts forgetting.</p>
+            <span class="cap-meta">ctx <b>82%</b> · compact suggested</span>
+          </li>
+          <li class="lead-cap" data-testid="lead-cap-2">
+            <h3>Quota, burn rate, projected exhaustion</h3>
+            <p>Usage windows with the current burn rate and the clock time the quota runs out, for both the short and the weekly window.</p>
+            <span class="cap-meta">5h <b>25%</b> · 79%/h · full in 57m</span>
+          </li>
+          <li class="lead-cap" data-testid="lead-cap-3">
+            <h3>Died is not the same as finished</h3>
+            <p>An agent that crashed is distinguished from one that completed its run. No more guessing at silent terminal tabs.</p>
+            <span class="cap-meta died">exit <b>1</b> · SIGTERM · 2m ago</span>
+          </li>
+        </ul>
+
+        <ul class="cap-list">
+          <li data-testid="cap-4"><b>One list, every agent.</b>All running sessions in a single panel, labelled by vendor.</li>
+          <li data-testid="cap-5"><b>Live session detail.</b>Title, project, model, terminal, and the current tool call, updated as it happens.</li>
+          <li data-testid="cap-6"><b>Stale questions stay put.</b>Agents blocked on an old question remain visible without raising new alarms.</li>
+          <li data-testid="cap-7"><b>Task progress.</b>Step <code>4 of 9</code>, with the current step named.</li>
+          <li data-testid="cap-8"><b>Cost per model.</b>Spend broken down by model, for today and this month.</li>
+          <li data-testid="cap-9"><b>Remote sessions.</b>Agents on machines you SSH into appear in the same panel as local ones.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== WHAT IT LETS YOU DO ===================== -->
+    <section id="acts" aria-labelledby="acts-heading">
+      <div class="wrap">
+        <p class="section-label">What it lets you do</p>
+        <h2 id="acts-heading">Unblock an agent without leaving what you are doing</h2>
+
+        <div class="act-lead" data-testid="act-lead">
+          <div>
+            <h3>Answer questions in the notch</h3>
+            <p>
+              Multiple-choice questions are answered where they appear, with a free-text
+              field when none of the options fit. A sliding countdown returns the question
+              to the terminal if you ignore it — and every interaction pushes the countdown
+              forward, so it never times out under you mid-sentence.
+            </p>
+            <span class="cap-meta">countdown <b>resets on keystroke</b> · hand back with one click</span>
+          </div>
+          <!-- static miniature of the question UI, echoing the live panel -->
+          <div class="mini-q" aria-hidden="true">
+            <p class="q-label">question · api-gateway</p>
+            <p class="q-text">Pin the rustls version, or mark the test flaky and move on?</p>
+            <div class="q-options">
+              <button class="q-opt" tabindex="-1">Pin rustls to 0.23</button>
+              <button class="q-opt" tabindex="-1">Mark test flaky</button>
+              <button class="q-opt free" tabindex="-1">Something else…</button>
+            </div>
+            <div class="q-count"><i class="q-bar"></i></div>
+          </div>
+        </div>
+
+        <ul class="cap-list">
+          <li data-testid="act-2"><b>Approve with a keystroke.</b>Permission requests approved from the notch with <code>⌥ space</code>.</li>
+          <li data-testid="act-3"><b>Review a full plan.</b>Read and approve an agent's entire plan without opening its terminal.</li>
+          <li data-testid="act-4"><b>Hand it back.</b>One click returns a question to the terminal if you would rather answer there.</li>
+          <li data-testid="act-5"><b>Quiet when you are watching.</b>Notifications fire only when you are not already looking at the panel.</li>
+          <li data-testid="act-6"><b>Jump to the exact tab.</b>Clicking a session focuses that agent's terminal tab, in the terminal that owns it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======================== HOW IT WORKS ======================== -->
+    <section id="how-it-works" class="howto" aria-labelledby="howto-heading">
+      <div class="wrap">
+        <p class="section-label">How it works</p>
+        <h2 id="howto-heading">Click a session, land in its exact terminal tab</h2>
+        <p>
+          Every session in the panel carries the handle of the terminal tab it is running
+          in. That handle is read from the agent process's <em>own environment</em> — the
+          variables the terminal exported when it spawned the shell — not from any
+          terminal's session database. When you click a row, Agent Island uses the handle
+          to focus that specific tab, in the terminal that owns it.
+        </p>
+        <p>The mechanism differs per terminal, and so does the permission it needs:</p>
+
+        <div class="table-scroll" data-testid="compat-table-wrap">
+          <table data-testid="compat-table">
+            <caption class="skip-link">Terminal focus mechanisms and required permissions</caption>
+            <thead>
+              <tr>
+                <th scope="col">Terminal</th>
+                <th scope="col">Handle</th>
+                <th scope="col">How it is focused</th>
+                <th scope="col">Permission</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Warp</td>
+                <td><code>WARP_FOCUS_URL</code></td>
+                <td>open the <code>warp://session/…</code> URL</td>
+                <td><span class="perm perm-none">none</span></td>
+              </tr>
+              <tr>
+                <td>iTerm2</td>
+                <td><code>ITERM_SESSION_ID</code></td>
+                <td>AppleScript selects that session</td>
+                <td><span class="perm perm-once">asked once</span></td>
+              </tr>
+              <tr>
+                <td>Terminal.app</td>
+                <td>the controlling TTY</td>
+                <td>AppleScript selects the matching tab</td>
+                <td><span class="perm perm-once">asked once</span></td>
+              </tr>
+              <tr>
+                <td>kitty</td>
+                <td><code>KITTY_WINDOW_ID</code></td>
+                <td><code>kitty @ focus-window</code></td>
+                <td><span class="perm perm-none">none</span></td>
+              </tr>
+              <tr>
+                <td>WezTerm</td>
+                <td><code>WEZTERM_PANE</code></td>
+                <td><code>wezterm cli activate-pane</code></td>
+                <td><span class="perm perm-none">none</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="note" data-testid="howto-note">
+          <strong>Why not read the terminal's database?</strong> Approaches that read a
+          terminal's session store and replay keystrokes cannot distinguish tabs that
+          share a working directory — so in a monorepo, where six tabs all sit in
+          <code>~/work/repo</code>, they land on the wrong one. The environment handle is
+          unambiguous because the agent process itself carries it.
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================== INSTALL =========================== -->
+    <section id="install" aria-labelledby="install-heading">
+      <div class="wrap">
+        <p class="section-label">Install</p>
+        <h2 id="install-heading">Three lines in, two lines out</h2>
+
+        <div class="install-grid">
+          <div class="code-block" data-testid="install-code-block">
+            <div class="code-head">
+              <span>install</span>
+              <button class="copy-btn" data-copy-target="install-cmd" data-testid="install-copy-button">copy</button>
+            </div>
+            <pre id="install-cmd"><span class="prompt">$</span> git clone https://github.com/Tiwari1999/Agent-Island.git
+<span class="prompt">$</span> cd Agent-Island
+<span class="prompt">$</span> ./install.sh</pre>
+          </div>
+          <div class="code-block" data-testid="uninstall-code-block">
+            <div class="code-head">
+              <span>uninstall</span>
+              <button class="copy-btn" data-copy-target="uninstall-cmd" data-testid="uninstall-copy-button">copy</button>
+            </div>
+            <pre id="uninstall-cmd"><span class="prompt">$</span> python3 scripts/uninstall-hooks.py
+<span class="prompt">$</span> rm -rf ~/Applications/AgentIsland.app</pre>
+          </div>
+        </div>
+
+        <p class="install-note" data-testid="notarize-note">
+          <strong>First launch:</strong> Agent Island is not notarized yet. On first open,
+          right-click the app and choose <code>Open</code>, then confirm. Required once;
+          subsequent launches are normal.
+        </p>
+
+        <ul class="claim-pills" data-testid="claim-pills">
+          <li>no screen recording</li>
+          <li>no full disk access</li>
+          <li>no accessibility permission for jumping</li>
+          <li>zero background processes when idle</li>
+          <li>fast session discovery</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================= CTA ============================= -->
+    <section aria-labelledby="cta-heading">
+      <div class="wrap">
+        <div class="cta-panel" data-testid="cta-panel">
+          <h2 id="cta-heading">Stop counting terminal tabs.</h2>
+          <p>Run as many agents as your quota allows. The notch keeps count for you.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#install" data-testid="cta-get-button">Get Agent Island</a>
+            <a class="btn btn-secondary" href="https://github.com/Tiwari1999/Agent-Island" data-testid="cta-github-button">View source</a>
           </div>
         </div>
       </div>
-      <div class="chapters">
-        <div class="chap"><div class="n">01</div><div class="h">An agent finishes</div>
-          <div class="d">The bar says so the moment a run ends — and a rate-limited session reads as dead, not complete.</div></div>
-        <div class="chap"><div class="n">02</div><div class="h">An agent needs you</div>
-          <div class="d">A permission card or a question surfaces in the notch, with a countdown before it hands back.</div></div>
-        <div class="chap"><div class="n">03</div><div class="h">Click to land</div>
-          <div class="d">One click on a row focuses that agent's exact terminal tab — not just the app.</div></div>
-        <div class="chap"><div class="n">04</div><div class="h">Expand and reply</div>
-          <div class="d">Open a row for the full chat, then type your answer without leaving the notch.</div></div>
-      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <span data-testid="footer-licence">MIT licence</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/Tiwari1999/Agent-Island" data-testid="footer-source-link">Source</a></li>
+        <li><a href="https://github.com/Tiwari1999/Agent-Island/issues" data-testid="footer-issues-link">Issues</a></li>
+      </ul>
+      <span data-testid="footer-platform">requires macOS 14 or later</span>
     </div>
-  </div>
-</div>
+  </footer>
 
-<div class="wrap">
+  <!-- ============================================================
+       Inline JS: mobile menu, copy buttons, and the panel state
+       cycler. No libraries. With prefers-reduced-motion the panel
+       is pinned to state 2 (the question) and nothing cycles.
+       ============================================================ -->
+  <script>
+    (function () {
+      // mobile menu
+      var toggle = document.getElementById('nav-toggle');
+      var menu = document.getElementById('mobile-menu');
+      toggle.addEventListener('click', function () {
+        var open = menu.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      menu.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') {
+          menu.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
 
-<section id="see">
-  <div class="shead">
-    <div class="kicker">See</div>
-    <h2>Nine tabs, one glance</h2>
-    <p class="lede">Running five to ten agents at once, the bottleneck stops being the agents. It becomes you. Agent Island puts the answer where your eyes already are.</p>
-  </div>
-  <div class="grid">
-    <div class="card"><h3>Every agent, one list</h3><p>Claude Code, Codex and Cursor together, each labelled with its own vendor, model and terminal.</p></div>
-    <div class="card"><h3>Live sessions</h3><p>Title, project, model, terminal — and the tool call happening right now.</p></div>
-    <div class="card"><h3>Context pressure</h3><p>A per-session ring, so you compact before the cliff rather than after it.</p></div>
-    <div class="card"><h3>Quota and burn rate</h3><p>Claude's 5h and 7d windows, Codex's own limits, the measured burn rate and projected exhaustion.</p></div>
-    <div class="card"><h3>Died vs finished</h3><p>A rate-limited session shows as dead, not complete — the two look identical everywhere else.</p></div>
-    <div class="card"><h3>Blocked, not shouting</h3><p>Agents stuck on an old question stay visible without crying wolf.</p></div>
-    <div class="card"><h3>Task progress</h3><p><code>4/9</code> with the current step, read from Claude's own task list.</p></div>
-    <div class="card"><h3>Cost breakdown</h3><p>API-equivalent spend per model, today and this month, from the vendors' own token accounting.</p></div>
-    <div class="card"><h3>SSH remote sessions</h3><p>Agents on machines you ssh into, in the same panel. Nothing is installed remotely — the probe travels on stdin.</p></div>
-  </div>
-  <div class="shot">
-    <img src="/assets/panel.png" alt="The expanded panel: quota and burn rate along the top, then one row per agent showing project, session title, vendor, model, terminal, context ring, last instruction and live tool call">
-  </div>
-  <p class="cap">Quota and burn rate up top · one row per agent, with its last instruction and live tool call</p>
-</section>
+      // copy buttons
+      document.querySelectorAll('.copy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var pre = document.getElementById(btn.getAttribute('data-copy-target'));
+          var text = pre.textContent.replace(/\$\s/g, '');
+          var done = function () {
+            btn.textContent = 'copied';
+            btn.classList.add('copied');
+            setTimeout(function () {
+              btn.textContent = 'copy';
+              btn.classList.remove('copied');
+            }, 1600);
+          };
+          var fallback = function () {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta);
+            done();
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(fallback);
+          } else {
+            fallback();
+          }
+        });
+      });
 
-<section id="act">
-  <div class="shead">
-    <div class="kicker">Act</div>
-    <h2>Answer without switching tabs</h2>
-    <p class="lede">Permission cards and questions are answered in the notch. Nothing is sent until you press submit.</p>
-  </div>
-  <div class="grid">
-    <div class="card"><h3>Approve from the notch</h3><p>Permission cards answered with <code>⌘⌥A</code> / <code>⌘⌥D</code>, without leaving what you were doing.</p></div>
-    <div class="card"><h3>Answer questions</h3><p><code>AskUserQuestion</code> prompts answered in place — options on <code>⌘⌥1</code>–<code>⌘⌥4</code>, plus a free-text field for your own words.</p></div>
-    <div class="card"><h3>Plan review</h3><p>Read the full Markdown plan and approve it from the notch, with a 55-second window instead of 20.</p></div>
-    <div class="card"><h3>Sliding window</h3><p>A visible countdown before an unanswered question hands back to the terminal. Every interaction pushes it forward, so answering never times out under you.</p></div>
-    <div class="card"><h3>Or answer in the chat</h3><p>One click releases the turn so Claude's own picker appears in the terminal, and the notch keeps a read-only copy.</p></div>
-    <div class="card"><h3>Alerts that respect you</h3><p>Desktop notifications only when you are not already looking at it.</p></div>
-  </div>
-</section>
+      // panel state cycler: 1 finish, 2 question, 3 jump, 4 expand
+      var panel = document.getElementById('agent-panel');
+      var dots = Array.prototype.slice.call(document.querySelectorAll('.pdot'));
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var state = 1;
+      var timer = null;
 
-<section id="jump">
-  <div class="shead">
-    <div class="kicker">The jump</div>
-    <h2>Land on the exact tab</h2>
-    <p class="lede">Click a row and arrive at that agent's own tab. The session handle comes from the agent process's own environment, so there is no database to read and no keystroke loop to fight — and it resolves correctly even when every tab shares one repo.</p>
-  </div>
-  <div class="tablewrap">
-    <table>
-      <thead><tr><th>Terminal</th><th>Handle</th><th>How it is focused</th><th>Permission</th></tr></thead>
-      <tbody>
-        <tr><td>Warp</td><td class="mono">WARP_FOCUS_URL</td><td>open the <span class="mono">warp://session/…</span> URL</td><td><span class="pill ok">none</span></td></tr>
-        <tr><td>iTerm2</td><td class="mono">ITERM_SESSION_ID</td><td>AppleScript <span class="mono">select</span> that session</td><td><span class="pill">Automation, once</span></td></tr>
-        <tr><td>Terminal.app</td><td class="mono">controlling tty</td><td>AppleScript select the matching tab</td><td><span class="pill">Automation, once</span></td></tr>
-        <tr><td>kitty</td><td class="mono">KITTY_WINDOW_ID</td><td><span class="mono">kitty @ focus-window</span></td><td><span class="pill ok">none</span></td></tr>
-        <tr><td>WezTerm</td><td class="mono">WEZTERM_PANE</td><td><span class="mono">wezterm cli activate-pane</span></td><td><span class="pill ok">none</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="callout">Other notch apps resolve Warp tabs by reading <span class="mono">warp.sqlite</span> and driving a keystroke loop. That cannot tell apart tabs sharing a working directory — so in a monorepo it lands on the wrong one.</div>
-</section>
+      function go(n) {
+        state = n;
+        panel.setAttribute('data-state', String(n));
+        dots.forEach(function (d) {
+          d.classList.toggle('active', d.getAttribute('data-goto') === String(n));
+        });
+      }
+      function schedule() {
+        if (reduced) return;
+        clearInterval(timer);
+        timer = setInterval(function () { go(state % 4 + 1); }, 3600);
+      }
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () {
+          go(Number(d.getAttribute('data-goto')));
+          schedule();
+        });
+      });
 
-<section id="install">
-  <div class="shead">
-    <div class="kicker">Install</div>
-    <h2>Two commands, no account</h2>
-    <p class="lede">Everything runs locally. No server, no telemetry, no API key, no subscription — it reads only what your agents already write to your own disk.</p>
-  </div>
-  <div class="two">
-    <div>
-      <h4>From source</h4>
-      <pre><span class="g">git</span> clone https://github.com/Tiwari1999/Agent-Island.git
-<span class="g">cd</span> Agent-Island
-<span class="g">./install.sh</span>
-
-<span class="c"># builds a release binary, assembles the app,</span>
-<span class="c"># registers the hooks, and launches it</span></pre>
-    </div>
-    <div>
-      <h4>Removing it</h4>
-      <pre><span class="g">python3</span> scripts/uninstall-hooks.py
-<span class="g">rm</span> -rf ~/Applications/AgentIsland.app
-
-<span class="c"># removes only its own hook entries and</span>
-<span class="c"># restores a statusLine it wrapped</span></pre>
-    </div>
-  </div>
-  <div class="callout"><b>From a release DMG:</b> right-click the app and choose <b>Open</b>, then Open again. These builds are not notarized yet, so a double-click gives “cannot be opened because the developer cannot be verified”. That is macOS's own way of saying you trust it, and only the first launch needs it. There is no <span class="mono">xattr</span> command to run — be suspicious of any project that gives you one.</div>
-  <div class="strip">
-    <span>no Screen Recording</span><span>no Full Disk Access</span><span>no Accessibility for any jump</span>
-    <span>zero subprocesses at idle</span><span>27 sessions in 0.08s</span>
-  </div>
-</section>
-
-<section>
-  <div class="closer">
-    <h2>Put it in the notch</h2>
-    <p class="lede" style="margin:0 auto 22px">Open source, MIT, and it never leaves your machine.</p>
-    <div class="cta" style="margin-bottom:0">
-      <a class="btn primary" href="https://github.com/Tiwari1999/Agent-Island">Get Agent Island</a>
-      <a class="btn ghost" href="https://github.com/Tiwari1999/Agent-Island/issues">Report an issue</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="foot">
-    <span>MIT licensed</span><span>·</span>
-    <a href="https://github.com/Tiwari1999/Agent-Island">Source</a>
-    <a href="https://github.com/Tiwari1999/Agent-Island/issues">Issues</a>
-    <div class="sp"></div>
-    <span class="mono">macOS 14+</span>
-  </div>
-</footer>
-
-</div>
+      if (reduced) {
+        go(2); // static: the question state, the product's best feature
+      } else {
+        go(1);
+        schedule();
+      }
+    })();
+  </script>
 </body>
 </html>
