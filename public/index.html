@@ -214,24 +214,23 @@
 
     /* ============================== hero ============================== */
     .hero { padding: 64px 0 40px; }
-    /* Side by side: the argument on the left, the product running on the right.
-       Stacked, the panel sat below the fold and the page opened on text alone. */
+    /* Stacked, not side by side: the argument reads first, then the product runs
+       full width beneath it. Two columns squeezed both. */
     .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
-      gap: 36px;
-      align-items: start;
+      display: block;
       padding-top: 8px;
     }
-    .hero-copy { min-width: 0; }
+    .hero-copy {
+      min-width: 0;
+      text-align: center;
+      max-width: 48rem;
+      margin: 0 auto 34px;
+    }
     /* The vendor name cycles: the product is not for one agent, and naming them
        one at a time says that faster than a list does. */
     /* The names differ in length — "Claude Code" wraps where "Copilot" does not —
        so the vendor owns a whole line and the rest of the headline never moves. */
-    .vend-line {
-      display: block;
-      white-space: nowrap;
-    }
+    .vend-line { white-space: nowrap; }
     .vend {
       color: var(--vend, var(--accent));
       transition: color .3s ease;
@@ -246,13 +245,12 @@
     /* desk + tabs + the line that names the state are one column, so the tabs
        sit under the panel instead of falling into the text column. */
     .hero-stage { min-width: 0; }
+    .hero-grid .hero-stage { max-width: 100%; }
     /* The panel is the widest thing on the page and earns a bigger column, so it
        breaks its wrapper to the right rather than being squeezed into the grid. */
     .hero-grid .panel-shell { min-width: 0; margin-top: 0; max-width: none; }
-    @media (max-width: 1080px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-      .hero-grid .panel-shell { margin-top: 4px; }
-    }
+
+    .hero-copy .agent-pill { margin-inline: auto; }
     .agent-pill {
       display: inline-flex;
       align-items: center;
@@ -289,6 +287,7 @@
       max-width: 58ch;
       margin: 16px 0 0;
     }
+    .hero-copy .hero-actions { justify-content: center; }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
@@ -316,6 +315,7 @@
       border-color: var(--border-strong);
     }
     .btn-secondary:hover { border-color: var(--faint); background: var(--surface); }
+    .hero-copy .hero-meta { justify-content: center; }
     .hero-meta {
       margin-top: 20px;
       font-family: var(--mono);
