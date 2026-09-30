@@ -230,7 +230,11 @@
        one at a time says that faster than a list does. */
     /* The names differ in length — "Claude Code" wraps where "Copilot" does not —
        so the vendor owns a whole line and the rest of the headline never moves. */
-    .vend-line { white-space: nowrap; }
+    /* Each line centres itself. With the vendor inside one long flow, a short
+       name ("Codex") and a long one ("Claude Code") shifted the whole line's
+       centre, so the first line drifted while the second stayed put. */
+    .h1-line { display: block; }
+    .vend { white-space: nowrap; }
     .vend {
       color: var(--vend, var(--accent));
       transition: color .3s ease;
@@ -1530,8 +1534,8 @@
           <span class="dot" aria-hidden="true"></span>
           Claude Code <span class="sep">/</span> Codex <span class="sep">/</span> Cursor
         </p>
-        <h1>Every <span class="vend-line"><span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span></span> run,<br>
-          in the notch you already have.</h1>
+        <h1><span class="h1-line">Every <span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span> run,</span>
+          <span class="h1-line">in the notch you already have.</span></h1>
         <p class="lede">
           Agent Island turns the MacBook notch into a live dashboard for your AI coding
           agents. Which one is blocked, which one is asking, which one is burning
@@ -2239,11 +2243,11 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         var el = document.querySelector('.vend');
         if (!el) return;
         var VENDORS = [
-          ['Claude\u00a0Code', '#d49a6a'],
-          ['Codex',             '#3ecf8e'],
-          ['Cursor',            '#a78bfa'],
-          ['Gemini\u00a0CLI',  '#4da8ff'],
-          ['Copilot',           '#9aa4b2']
+          ['Claude\u00a0Code', '#e8a87c'],
+          ['Codex',             '#4ade80'],
+          ['Cursor',            '#c4b5fd'],
+          ['Gemini\u00a0CLI',  '#60b8ff'],
+          ['Copilot',           '#cbd5e1']
         ];
         var vi = 0;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -2254,7 +2258,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
           el.textContent = VENDORS[vi][0];
           el.style.setProperty('--vend', VENDORS[vi][1]);
           el.classList.add('swap');
-        }, 2600);
+        }, 1500);
       })();
 
       // ---- the demo is a demo: make every control in it actually respond ----
