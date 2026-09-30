@@ -214,6 +214,22 @@
 
     /* ============================== hero ============================== */
     .hero { padding: 64px 0 40px; }
+    /* Side by side: the argument on the left, the product running on the right.
+       Stacked, the panel sat below the fold and the page opened on text alone. */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+      gap: 44px;
+      align-items: center;
+    }
+    .hero-copy { min-width: 0; }
+    /* The panel is the widest thing on the page and earns a bigger column, so it
+       breaks its wrapper to the right rather than being squeezed into the grid. */
+    .hero-grid .panel-shell { min-width: 0; margin-top: 0; max-width: none; }
+    @media (max-width: 1080px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+      .hero-grid .panel-shell { margin-top: 4px; }
+    }
     .agent-pill {
       display: inline-flex;
       align-items: center;
@@ -384,8 +400,10 @@
     .ph-total { color: var(--faint); }
     .ph-pill em { font-style: normal; }
     .ph-pill .cw4 { display: none; }
-    [data-state="4"] .ph-pill .cw4 { display: inline; }
-    [data-state="4"] .ph-pill .cw3 { display: none; }
+    /* One agent finished in state 1; the count drops to 3 and stays there.
+       Showing 4 again at state 4 contradicted the row right below it. */
+    .ph-pill .cw4 { display: none; }
+    .ph-pill .cw3 { display: inline; }
 
     /* --- agent rows --- */
     .rows { list-style: none; margin: 0; padding: 0; }
@@ -523,7 +541,8 @@
     /* --- state 1: infra/terraform-plan finishes its run --- */
     [data-state="1"] .row-c .eq i,
     [data-state="2"] .row-c .eq i,
-    [data-state="3"] .row-c .eq i {
+    [data-state="3"] .row-c .eq i,
+    [data-state="4"] .row-c .eq i {
       animation: none;
       height: 18%;
       background: var(--border-strong);
@@ -533,11 +552,12 @@
     [data-state="3"] .row-c .st-busy,
     [data-state="1"] .row-c .tool,
     [data-state="2"] .row-c .tool,
-    [data-state="3"] .row-c .tool { display: none; }
+    [data-state="3"] .row-c .tool,
+    [data-state="4"] .row-c .tool { display: none; }
     [data-state="1"] .row-c .st-done,
     [data-state="2"] .row-c .st-done,
-    [data-state="3"] .row-c .st-done { display: inline; }
-    [data-state="4"] .row-c .tool { display: inline; }
+    [data-state="3"] .row-c .st-done,
+    [data-state="4"] .row-c .st-done { display: inline; }
 
     /* --- state 3: jump to dotfiles/nvim-config's terminal tab --- */
     .focus-tag {
@@ -546,19 +566,21 @@
       font-size: 10px;
       color: var(--accent);
     }
-    [data-state="3"] .row-d {
-      background: rgba(61, 214, 140, 0.05);
+    /* The jump lands on the SAME agent that just asked, so states 2-4 read as
+       one sequence on one session rather than three unrelated rows. */
+    [data-state="3"] .row-b {
+      background: var(--accent-dim);
     }
-    [data-state="3"] .row-d .jump {
+    [data-state="3"] .row-b .jump {
       background: var(--accent);
       border-color: var(--accent);
       color: var(--accent-ink);
     }
-    [data-state="3"] .row-d .tag.term {
+    [data-state="3"] .row-b .tag.term {
       border-color: var(--accent-edge);
       color: var(--accent);
     }
-    [data-state="3"] .row-d .focus-tag { display: inline; }
+    [data-state="3"] .row-b .focus-tag { display: inline; }
 
     /* --- slide-down regions (question card / conversation) --- */
     .reveal {
@@ -1204,7 +1226,8 @@
   <main id="main">
     <!-- ============================ HERO ============================ -->
     <section class="hero">
-      <div class="wrap">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
         <p class="agent-pill" data-testid="hero-agent-pill">
           <span class="dot" aria-hidden="true"></span>
           Claude Code <span class="sep">/</span> Codex <span class="sep">/</span> Cursor
@@ -1222,6 +1245,7 @@
         <p class="hero-meta" data-testid="hero-meta">
           <span>macOS 14+</span><span>Swift / AppKit</span><span>MIT licence</span>
         </p>
+        </div>
 
         <!-- ============================================================
              LIVE PANEL — the product, recreated in DOM. Not a screenshot.
@@ -1291,6 +1315,7 @@
                   <span class="tag vendor">Claude</span>
                   <span class="tag model">Sonnet 5</span>
                   <span class="tag term">iTerm2</span>
+                  <span class="focus-tag">pane focused</span>
                   <span class="ring-wrap">
                     <svg class="ring" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="23.2 56.5" transform="rotate(-90 12 12)"/></svg>
                     41%
@@ -1375,7 +1400,6 @@
                   <span class="tag vendor">Cursor</span>
                   <span class="tag model">Composer 1</span>
                   <span class="tag term">WezTerm</span>
-                  <span class="focus-tag">pane focused</span>
                   <span class="ring-wrap">
                     <svg class="ring" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle class="track" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/><circle class="fill" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10.2 56.5" transform="rotate(-90 12 12)"/></svg>
                     18%
