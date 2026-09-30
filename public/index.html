@@ -223,6 +223,9 @@
       align-items: center;
     }
     .hero-copy { min-width: 0; }
+    /* desk + tabs + the line that names the state are one column, so the tabs
+       sit under the panel instead of falling into the text column. */
+    .hero-stage { min-width: 0; }
     /* The panel is the widest thing on the page and earns a bigger column, so it
        breaks its wrapper to the right rather than being squeezed into the grid. */
     .hero-grid .panel-shell { min-width: 0; margin-top: 0; max-width: none; }
@@ -744,44 +747,231 @@
     }
 
     /* state dots beneath the panel */
-    .panel-dots {
+    /* ---- permission card: the diff, with the keys that answer it ---- */
+    .p-card {
+      margin: 8px 0 2px;
+      border: 1px solid var(--amber-edge);
+      border-radius: 9px;
+      background: var(--amber-dim);
+      padding: 10px 12px;
+    }
+    .p-label {
+      margin: 0 0 6px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    .p-warn { margin-right: 4px; }
+    .p-file { margin: 0 0 8px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+    .p-file b { color: var(--text); font-weight: 500; }
+    .p-diff {
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.7;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .dl { display: flex; gap: 10px; padding: 0 8px; }
+    .dl .ln { color: var(--faint); min-width: 18px; text-align: right; user-select: none; }
+    .dl .dc { color: var(--muted); white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+    .dl.del { background: rgba(242,112,138,.10); }
+    .dl.del .dc { color: var(--rose); }
+    .dl.add { background: rgba(61,214,140,.10); }
+    .dl.add .dc { color: var(--green); }
+    .p-foot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 9px;
+    }
+    .p-stat { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+    .p-acts { margin-left: auto; display: flex; gap: 6px; }
+    .p-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: .3rem .6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: .14s;
+    }
+    .p-btn kbd { font: inherit; opacity: .55; }
+    .p-btn.allow:hover, .p-btn.allow.picked {
+      color: var(--green); border-color: var(--green-edge); background: var(--green-dim);
+    }
+    .p-btn.deny:hover, .p-btn.deny.picked {
+      color: var(--rose); border-color: var(--rose-edge); background: var(--rose-dim);
+    }
+    .p-answered {
+      display: none;
+      margin-top: 7px;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .p-card.answered .p-answered { display: block; }
+    .p-card.answered .p-acts { opacity: .5; pointer-events: none; }
+    [data-state="5"] .p-reveal { grid-template-rows: 1fr; }
+    [data-state="5"] .p-reveal > div { opacity: 1; transform: none; }
+    @media (max-width: 640px) { .dl .dc { font-size: 10px; } .p-btn kbd { display: none; } }
+
+    /* ---- mock macOS desktop behind the panel ---- */
+    .desk {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0a0e17;
+      box-shadow: 0 30px 70px -34px rgba(0,0,0,.92);
+    }
+    .desk-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 5px 12px;
+      font-family: var(--sans);
+      font-size: 11.5px;
+      color: rgba(231,234,240,.82);
+      background: rgba(10,14,23,.72);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      position: relative;
+      z-index: 3;
+    }
+    .dm-apple { font-size: 12px; opacity: .9; }
+    .dm-app { font-weight: 650; }
+    .dm-i { opacity: .62; }
+    .dm-spacer { flex: 1; }
+    .dm-clock { opacity: .75; font-variant-numeric: tabular-nums; }
+    @media (max-width: 700px) { .dm-i { display: none; } }
+
+    .desk-body {
+      position: relative;
+      padding: 30px 16px 26px;
+      min-height: 330px;
+      /* A macOS-ish wallpaper, drawn rather than shipped as an image. */
+      background:
+        radial-gradient(120% 90% at 14% 8%, #2b4a7a 0%, transparent 55%),
+        radial-gradient(90% 80% at 88% 22%, #7a4a2b 0%, transparent 52%),
+        radial-gradient(120% 120% at 60% 100%, #14315c 0%, transparent 60%),
+        linear-gradient(160deg, #16233d 0%, #0d1526 60%, #0a0f1a 100%);
+    }
+
+    /* the terminals the agents are running in, behind the panel */
+    .term {
+      position: absolute;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(8,11,18,.88);
+      backdrop-filter: blur(3px);
+      box-shadow: 0 18px 44px -20px rgba(0,0,0,.9);
+      font-family: var(--mono);
+    }
+    .term-bar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      background: rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .term-bar i { width: 8px; height: 8px; border-radius: 50%; background: #3b4657; }
+    .term-bar i:first-child { background: #e06c60; }
+    .term-bar i:nth-child(2) { background: #e0b341; }
+    .term-bar i:nth-child(3) { background: #4fb86a; }
+    .term-bar span { margin-left: 6px; font-size: 10px; color: rgba(231,234,240,.55); }
+    .term pre {
+      margin: 0;
+      padding: 10px 12px;
+      font-size: 10.5px;
+      line-height: 1.75;
+      color: rgba(231,234,240,.62);
+      background: none;
+      border: 0;
+      white-space: pre-wrap;
+    }
+    .term .tg { color: var(--green); }
+    .term .tm { color: var(--muted); }
+    .term-back  { left: 3%;  top: 16%; width: 40%; opacity: .5; }
+    .term-front { right: 3%; bottom: 7%; width: 46%; opacity: .72; }
+    @media (max-width: 860px) { .term { display: none; } .desk-body { min-height: 0; padding: 22px 10px 18px; } }
+
+    /* the panel floats above the desktop, where it actually lives */
+    .desk .panel-shell { position: relative; z-index: 2; margin: 0 auto; max-width: 96%; }
+
+    /* Named tabs, not dots: the four words are the product's four jobs, so the
+       control itself says what the panel can do before anything is clicked. */
+    .panel-tabs {
       display: flex;
       gap: 6px;
       justify-content: center;
-      margin-top: 16px;
+      flex-wrap: wrap;
+      margin-top: 18px;
     }
-    .pdot {
-      width: 22px;
-      height: 18px;
-      background: none;
-      border: none;
+    .ptab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: .42rem .8rem;
       cursor: pointer;
-      position: relative;
-      padding: 0;
+      transition: color .15s, border-color .15s, background .15s;
     }
-    .pdot::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border-strong);
-      transition: background-color 200ms ease-out, transform 200ms ease-out;
+    .ptab:hover { color: var(--text); border-color: var(--border-strong); }
+    .ptab-ico { font-size: 11px; opacity: .8; }
+    .ptab.active {
+      color: var(--accent);
+      border-color: var(--accent-edge);
+      background: var(--accent-dim);
     }
-    .pdot:hover::after { background: var(--faint); }
-    .pdot.active::after {
-      background: var(--accent);
-      transform: translate(-50%, -50%) scale(1.25);
+    .ptab.active .ptab-ico { opacity: 1; }
+
+    /* One heading + one line per state, swapped with the panel. */
+    .panel-say {
+      margin-top: 20px;
+      text-align: center;
+      min-height: 62px;
     }
+    .psay-h, .psay-s { display: none; margin: 0; }
+    .psay-h {
+      font-size: 19px;
+      font-weight: 650;
+      letter-spacing: -.02em;
+      color: var(--text);
+    }
+    .psay-s {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 5px;
+      max-width: 42ch;
+      margin-inline: auto;
+    }
+    .panel-say .psay-h.on, .panel-say .psay-s.on {
+      display: block;
+      animation: sayIn .26s ease-out;
+    }
+    @keyframes sayIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
     .panel-caption {
+      margin-top: 12px;
       text-align: center;
       font-family: var(--mono);
-      font-size: 10.5px;
+      font-size: 11.5px;
       color: var(--faint);
-      margin-top: 8px;
     }
 
     /* phone: the panel simplifies instead of shrinking */
@@ -1254,6 +1444,37 @@
              To wire real data: swap the .row <li> items and the
              .panel-head figures for live session values.
              ============================================================ -->
+        <!-- The panel sits on a mock desktop: menu bar, wallpaper, and the two
+             terminal windows the agents are actually running in. Floating on the
+             page background, it read as a widget; in this frame it reads as
+             something living on top of your screen, which is what it is. -->
+        <div class="hero-stage">
+        <div class="desk" data-testid="desktop-mock">
+          <div class="desk-bar" aria-hidden="true">
+            <span class="dm-apple">&#63743;</span>
+            <span class="dm-app">Agent Island</span>
+            <span class="dm-i">File</span><span class="dm-i">Edit</span>
+            <span class="dm-i">Window</span><span class="dm-i">Help</span>
+            <span class="dm-spacer"></span>
+            <span class="dm-clock">Tue 2:14 PM</span>
+          </div>
+          <div class="desk-body">
+            <div class="term term-back" aria-hidden="true">
+              <div class="term-bar"><i></i><i></i><i></i><span>codex — terraform-plan</span></div>
+              <pre>plan the VPC peering change and hold before apply
+<span class="tg">Read(main.tf)</span>
+  └── 4.1 KB
+<span class="tg">Plan: 3 to add, 1 to change</span></pre>
+            </div>
+            <div class="term term-front" aria-hidden="true">
+              <div class="term-bar"><i></i><i></i><i></i><span>claude — api-gateway</span></div>
+              <pre>Let me look at the health-check test.
+<span class="tm">Searching for 4 patterns…</span>
+<span class="tm">Read 2 files</span>
+
+The test pins rustls 0.22; CI resolves 0.23.</pre>
+            </div>
+
         <div class="panel-shell">
           <div class="panel-notch" aria-hidden="true"></div>
           <div class="panel" id="agent-panel" data-state="1" data-testid="hero-panel"
@@ -1336,6 +1557,30 @@
                         <button class="q-opt free" data-testid="q-opt-3">Something else…</button>
                       </div>
                       <div class="q-answered" data-testid="question-answered"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Approve: the diff itself, not a description of one. -->
+                <div class="reveal p-reveal">
+                  <div>
+                    <div class="p-card" data-testid="permission-card">
+                      <p class="p-label"><span class="p-warn">&#9888;</span> permission · api-gateway</p>
+                      <p class="p-file">Edit <b>src/routes/health.ts</b></p>
+                      <div class="p-diff">
+                        <div class="dl"><span class="ln">21</span><span class="dc">  const res = await probe(url);</span></div>
+                        <div class="dl del"><span class="ln">22</span><span class="dc">- if (res.status !== 200) throw new Error();</span></div>
+                        <div class="dl add"><span class="ln">22</span><span class="dc">+ if (!res.ok) throw new ProbeError(res.status);</span></div>
+                        <div class="dl add"><span class="ln">23</span><span class="dc">+ return res.json();</span></div>
+                      </div>
+                      <div class="p-foot">
+                        <span class="p-stat">+2 &minus;1</span>
+                        <span class="p-acts">
+                          <button class="p-btn deny" data-testid="perm-deny">Deny <kbd>&#8984;&#8997;D</kbd></button>
+                          <button class="p-btn allow" data-testid="perm-allow">Allow <kbd>&#8984;&#8997;A</kbd></button>
+                        </span>
+                      </div>
+                      <div class="p-answered" data-testid="permission-answered"></div>
                       <div class="q-count" aria-hidden="true"><i class="q-bar"></i></div>
                     </div>
                   </div>
@@ -1412,13 +1657,38 @@
           </div>
 
           <!-- state dots: click to jump to a state -->
-          <div class="panel-dots" role="group" aria-label="Demo state selector">
-            <button class="pdot active" data-goto="1" aria-label="Show state: an agent finishes" data-testid="panel-dot-1"></button>
-            <button class="pdot" data-goto="2" aria-label="Show state: an agent asks a question" data-testid="panel-dot-2"></button>
-            <button class="pdot" data-goto="3" aria-label="Show state: jump to a terminal tab" data-testid="panel-dot-3"></button>
-            <button class="pdot" data-goto="4" aria-label="Show state: expand and reply inline" data-testid="panel-dot-4"></button>
           </div>
-          <p class="panel-caption">live demo · try it — pick an answer, jump a row, or type a reply</p>
+          </div>
+        </div>
+
+          <div class="panel-tabs" role="group" aria-label="What the panel does">
+            <button class="ptab active" data-goto="1" data-testid="panel-tab-1">
+              <span class="ptab-ico" aria-hidden="true">▚</span>Monitor</button>
+            <button class="ptab" data-goto="2" data-testid="panel-tab-2">
+              <span class="ptab-ico" aria-hidden="true">◇</span>Ask</button>
+            <button class="ptab" data-goto="5" data-testid="panel-tab-5">
+              <span class="ptab-ico" aria-hidden="true">✓</span>Approve</button>
+            <button class="ptab" data-goto="3" data-testid="panel-tab-3">
+              <span class="ptab-ico" aria-hidden="true">↗</span>Jump</button>
+            <button class="ptab" data-goto="4" data-testid="panel-tab-4">
+              <span class="ptab-ico" aria-hidden="true">▤</span>Reply</button>
+          </div>
+
+          <!-- The line under the tabs names what the panel is currently showing,
+               so the demo explains itself instead of leaving it to be inferred. -->
+          <div class="panel-say" data-testid="panel-say">
+            <p class="psay-h" data-for="1">Every agent. One glance.</p>
+            <p class="psay-s" data-for="1">Claude Code, Codex and Cursor in a single view — with the run that just finished.</p>
+            <p class="psay-h" data-for="2">Answer without switching apps.</p>
+            <p class="psay-s" data-for="2">A question reaches the notch with its options. Pick one and the turn goes back.</p>
+            <p class="psay-h" data-for="5">Approve without switching apps.</p>
+            <p class="psay-s" data-for="5">The diff comes to the notch. Allow or deny with a keystroke, and the agent carries on.</p>
+            <p class="psay-h" data-for="3">Land on the exact tab.</p>
+            <p class="psay-s" data-for="3">One click focuses that agent's own terminal tab — not just the app.</p>
+            <p class="psay-h" data-for="4">Read the thread, reply in place.</p>
+            <p class="psay-s" data-for="4">Open a session for its conversation and answer without leaving what you are doing.</p>
+          </div>
+          <p class="panel-caption">try it — pick an answer, jump a row, or type a reply</p>
         </div>
         <!-- ====================== end live panel ====================== -->
       </div>
@@ -1710,7 +1980,8 @@
 
       // panel state cycler: 1 finish, 2 question, 3 jump, 4 expand
       var panel = document.getElementById('agent-panel');
-      var dots = Array.prototype.slice.call(document.querySelectorAll('.pdot'));
+      var dots = Array.prototype.slice.call(document.querySelectorAll('.ptab'));
+      var says = Array.prototype.slice.call(document.querySelectorAll('.psay-h, .psay-s'));
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var state = 1;
       var timer = null;
@@ -1721,11 +1992,19 @@
         dots.forEach(function (d) {
           d.classList.toggle('active', d.getAttribute('data-goto') === String(n));
         });
+        // The words move with the panel, so what is on screen is always named.
+        says.forEach(function (s) {
+          s.classList.toggle('on', s.getAttribute('data-for') === String(n));
+        });
       }
       function schedule() {
         if (reduced) return;
         clearInterval(timer);
-        timer = setInterval(function () { go(state % 4 + 1); }, 3600);
+        var ORDER = [1, 2, 5, 3, 4];
+        timer = setInterval(function () {
+          var i = ORDER.indexOf(state);
+          go(ORDER[(i + 1) % ORDER.length]);
+        }, 3800);
       }
       // Any interaction inside the panel stops the carousel. The page promises a
       // countdown that never times out under you; the demo must not shift under
@@ -1772,6 +2051,27 @@
             qcard.classList.add('answered');
             if (answered) {
               answered.textContent = 'sent · "' + o.textContent.trim() + '" — the turn goes back to the agent';
+            }
+          });
+        });
+      }
+
+      // Allow / Deny: answer the permission, say what was sent, stop the card.
+      var pcard = panel.querySelector('.p-card');
+      if (pcard) {
+        var pbtns = Array.prototype.slice.call(pcard.querySelectorAll('.p-btn'));
+        var pans = pcard.querySelector('.p-answered');
+        pbtns.forEach(function (b) {
+          b.addEventListener('click', function () {
+            pbtns.forEach(function (x) { x.classList.remove('picked'); });
+            b.classList.add('picked');
+            pcard.classList.add('answered');
+            var allowed = b.classList.contains('allow');
+            if (pans) {
+              pans.textContent = allowed
+                ? 'allowed · the edit is applied and the agent continues'
+                : 'denied · the agent is told no and asks again';
+              pans.style.color = allowed ? 'var(--green)' : 'var(--rose)';
             }
           });
         });
