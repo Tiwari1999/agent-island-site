@@ -12,10 +12,11 @@ Facts used in the copy, all verified against the repo on 2026-10-15:
 | Requires | macOS 14+ |
 | Licence | MIT |
 | Cost | free |
-| Install | `brew install --cask agent-island`, or build from source |
+| Install | `brew install tiwari1999/tap/agent-island`, or `--cask` for the prebuilt DMG |
 
-**Do not claim** a notarised build, a signed DMG, or auto-update yet. See
-"Before you post" at the bottom.
+**Do not claim** a notarised build or a signed DMG. Auto-update *is* live now
+(Sparkle, against https://agentisland.in/appcast.xml), so that one is fair game.
+See "Before you post" at the bottom.
 
 ---
 
@@ -56,8 +57,12 @@ Some details that might interest people here:
 
 It's MIT and free: https://github.com/Tiwari1999/Agent-Island
 
-One honest caveat: the build isn't notarised yet, so macOS will warn you on first
-open and you'll need to right-click → Open. I'd rather say that up front than
+    brew install tiwari1999/tap/agent-island
+
+That route builds on your Mac, so nothing is quarantined and there's no Gatekeeper
+prompt at all. There's also a prebuilt DMG (`brew install --cask
+tiwari1999/tap/agent-island`, Apple silicon), but it isn't notarised yet, so that
+one needs right-click → Open on first launch. I'd rather say so up front than
 have you hit it cold.
 
 Happy to answer anything.
@@ -85,7 +90,7 @@ from the notch, or click the row to land in its exact terminal tab.
 
 Free, MIT, macOS 14+, Swift/AppKit — no Electron.
 
-    brew install --cask agent-island
+    brew install tiwari1999/tap/agent-island
 
 https://agentisland.in
 
@@ -185,18 +190,27 @@ Match the badge style each list already uses or the PR gets closed.
 
 Two things will cost you installs from every post above.
 
-**1. There's no downloadable build.** `v0.5.12` has no release assets, so anyone
-arriving has to clone and build it. HN and r/macapps will tolerate that; nobody
-else will. Attach a DMG to the release, or lead with the Homebrew line everywhere.
+**1. ~~There's no downloadable build.~~ Fixed.** `v0.5.12` now carries
+`AgentIsland-0.5.12.dmg` (2.4MB, arm64), and `brew install --cask
+tiwari1999/tap/agent-island` installs it.
 
-**2. The app isn't notarised.** `packaging/sparkle-public-ed-key` still holds
-`REPLACE_ME_WITH_generate_keys_-p_OUTPUT`, and `release.sh` refuses to cut a
-release with the placeholder — a build shipped without the real key can never
-auto-update.
+**2. ~~A build shipped without the Sparkle key can never auto-update.~~ Fixed.**
+The EdDSA key exists, the app carries its public half, and the appcast is live at
+https://agentisland.in/appcast.xml. Installs from here on can update themselves.
 
-Until that's fixed, say so in the post. "Not notarised yet, right-click → Open"
-costs you a few installs. Letting people discover it themselves costs you the
-comment thread.
+**3. The app still isn't notarised.** That needs an Apple Developer account
+($99/yr). Consequence: the DMG and cask route gets "cannot be opened" on first
+launch and needs right-click → Open. The formula route (`brew install
+tiwari1999/tap/agent-island`) compiles locally and has no Gatekeeper prompt at
+all, which is why it's the one to lead with.
+
+Say so in the post either way. "Not notarised yet, right-click → Open" costs you
+a few installs. Letting people discover it themselves costs you the comment thread.
+
+**4. The bare cask name doesn't exist.** `brew install --cask agent-island`
+fails: homebrew-cask requires notarisation *and*
+[225 stars for a self-submission](https://docs.brew.sh/Package-Acceptance-Policy#notability).
+Always post the tap-prefixed command.
 
 **On timing:** everything above assumes the Product Hunt page is live and you can
 link it. Don't post all of these in one day. HN first, then one subreddit a day.

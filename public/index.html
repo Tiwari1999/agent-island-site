@@ -3045,7 +3045,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
     <!-- =========================== INSTALL =========================== -->
     <section id="install" aria-labelledby="install-heading">
       <div class="wrap">
-        <h2 id="install-heading">Three lines in, two lines out</h2>
+        <h2 id="install-heading">Two lines in, two lines out</h2>
 
         <div class="install-grid">
           <div class="code-block" data-testid="install-code-block">
@@ -3053,24 +3053,26 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
               <span>install</span>
               <button class="copy-btn" data-copy-target="install-cmd" data-testid="install-copy-button">copy</button>
             </div>
-            <pre id="install-cmd"><span class="prompt">$</span> git clone https://github.com/Tiwari1999/Agent-Island.git
-<span class="prompt">$</span> cd Agent-Island
-<span class="prompt">$</span> ./install.sh</pre>
+            <pre id="install-cmd"><span class="prompt">$</span> brew install tiwari1999/tap/agent-island
+<span class="prompt">$</span> agent-island</pre>
           </div>
           <div class="code-block" data-testid="uninstall-code-block">
             <div class="code-head">
               <span>uninstall</span>
               <button class="copy-btn" data-copy-target="uninstall-cmd" data-testid="uninstall-copy-button">copy</button>
             </div>
-            <pre id="uninstall-cmd"><span class="prompt">$</span> python3 scripts/uninstall-hooks.py
-<span class="prompt">$</span> rm -rf ~/Applications/AgentIsland.app</pre>
+            <pre id="uninstall-cmd"><span class="prompt">$</span> python3 "$(brew --prefix agent-island)/libexec/scripts/uninstall-hooks.py"
+<span class="prompt">$</span> brew uninstall agent-island &amp;&amp; rm -rf ~/Applications/AgentIsland.app</pre>
           </div>
         </div>
 
         <p class="install-note" data-testid="notarize-note">
-          <strong>First launch:</strong> Agent Island is not notarized yet. On first open,
-          right-click the app and choose <code>Open</code>, then confirm. Required once;
-          subsequent launches are normal.
+          <strong>No Gatekeeper warning:</strong> Homebrew builds it on your Mac, so nothing is
+          quarantined and it opens normally. Prefer not to build? <code>brew install --cask
+          tiwari1999/tap/agent-island</code> takes the prebuilt 2.4&nbsp;MB disk image on Apple
+          silicon instead &mdash; that one is not notarized yet, so its first open needs
+          right-click&nbsp;&rarr;&nbsp;<code>Open</code>. Or clone and run
+          <code>./install.sh</code>.
         </p>
 
         <ul class="claim-pills" data-testid="claim-pills">
