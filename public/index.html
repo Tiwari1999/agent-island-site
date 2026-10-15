@@ -3,18 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agent Island — every coding agent you run, in the notch you already have</title>
-  <meta name="description" content="Agent Island turns the MacBook notch into a live dashboard for your AI coding agents. See which one is blocked, asking, or burning quota — and act without switching windows." />
+  <title>Agent Island: every coding agent you run, in the notch you already have</title>
+  <meta name="description" content="Agent Island turns the MacBook notch into a live dashboard for your AI coding agents. See which one is blocked, asking, or burning quota, and act without switching windows." />
 
   <meta name="theme-color" content="#0B0D11" />
+
+  <!-- One canonical host. The apex is the real one; www and the workers.dev
+       origin both redirect to it, so ranking signals do not split. -->
+  <link rel="canonical" href="https://agentisland.in/" />
+
+  <!-- Crawlers resolve og:image relatively only sometimes; absolute always. -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Agent Island" />
+  <meta property="og:url" content="https://agentisland.in/" />
   <meta property="og:title" content="Agent Island" />
-  <meta property="og:description" content="Every coding agent you run, in the notch you already have. Claude Code, Codex and Cursor in one panel — jump to the exact terminal tab, approve and answer without leaving it." />
-  <meta property="og:image" content="/assets/panel.png" />
+  <meta property="og:description" content="Every coding agent you run, in the notch you already have. Claude Code, Codex and Cursor in one panel. Jump to the exact terminal tab, approve and answer without leaving it." />
+  <meta property="og:image" content="https://agentisland.in/assets/panel-wide.png" />
+  <meta property="og:image:width" content="1960" />
+  <meta property="og:image:height" content="506" />
+  <meta property="og:image:alt" content="The Agent Island panel hanging from the MacBook notch, showing three live coding sessions." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Agent Island" />
   <meta name="twitter:description" content="Every coding agent you run, in the notch you already have." />
-  <meta name="twitter:image" content="/assets/panel.png" />
+  <meta name="twitter:image" content="https://agentisland.in/assets/panel-wide.png" />
+  <script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://agentisland.in/#website",
+    "url": "https://agentisland.in/",
+    "name": "Agent Island",
+    "description": "Every coding agent you run, in the notch you already have.",
+    "publisher": {
+      "@id": "https://agentisland.in/#person"
+    },
+    "inLanguage": "en"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://agentisland.in/#person",
+    "name": "Abhinav Tiwari",
+    "url": "https://agentisland.in/",
+    "sameAs": [
+      "https://github.com/Tiwari1999"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": "https://agentisland.in/#app",
+    "name": "Agent Island",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "Menu bar utility",
+    "operatingSystem": "macOS 14.0 or later",
+    "url": "https://agentisland.in/",
+    "downloadUrl": "https://github.com/Tiwari1999/Agent-Island/releases",
+    "softwareVersion": "0.5.12",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
+    "author": {
+      "@id": "https://agentisland.in/#person"
+    },
+    "description": "Shows every running AI coding agent in the MacBook notch. Claude Code, Codex, Cursor, Gemini CLI and OpenCode in one panel: answer a blocked agent's question from the notch, or click a row to land in its exact terminal tab.",
+    "featureList": [
+      "One row per running agent session",
+      "Answer blocked agents from the notch",
+      "Jump to the agent's exact terminal tab",
+      "Context window, spend and quota per session"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+]
+  </script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0D11'/%3E%3Cg fill='%234DA8FF'%3E%3Crect x='7' y='17' width='2.6' height='8' rx='1'/%3E%3Crect x='11' y='13' width='2.6' height='12' rx='1'/%3E%3Crect x='15' y='9' width='2.6' height='16' rx='1'/%3E%3Crect x='19' y='14' width='2.6' height='11' rx='1'/%3E%3Crect x='23' y='19' width='2.6' height='6' rx='1'/%3E%3C/g%3E%3C/svg%3E" />
 
   <!-- Fonts: Google Fonts via <link>; every font-family below has a real fallback stack. -->
@@ -460,10 +526,11 @@
     .avatar {
       width: 28px;
       height: 28px;
-      border-radius: 6px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
       display: block;
+      /* The face draws its own rounded head, so the old tile background and
+         border would sit behind it as a visible box. */
+      background: none;
+      border: 0;
     }
     /* four-bar equaliser: runs while the agent is working */
     .eq {
@@ -1451,13 +1518,17 @@
       background: var(--surface-2);
       padding: 42px 34px;
       max-width: 700px;
+      /* Capped but never centred, so it sat hard left in a 1140px wrap. */
+      margin-inline: auto;
+      text-align: center;
     }
     .cta-panel p {
       color: var(--muted);
       font-size: 14px;
-      margin: 10px 0 0;
+      margin: 10px auto 0;
       max-width: 48ch;
     }
+    .cta-panel .hero-actions { justify-content: center; }
     .cta-panel .hero-actions { margin-top: 22px; }
 
     /* --- footer --- */
@@ -1502,9 +1573,872 @@
       .eq i { animation: none; height: 55%; }
       [data-state="2"] .q-bar { animation: none; width: 45%; }
     }
+
+    /* ====================================================================
+       v2 — depth, scale and motion. Appended last so it wins on
+       specificity ties without touching the rules above.
+       ==================================================================== */
+
+    :root { --maxw: 1140px; }
+
+    /* --- 1. Ambient light. The page was one flat fill, so nothing sat on
+       anything. Two soft pools behind the hero give the panel something to
+       float above; fixed so they do not scroll away and re-paint. --- */
+    body { position: relative; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 -10% auto -10%;
+      height: 92vh;
+      background:
+        radial-gradient(40% 36% at 20% 30%, rgba(77,168,255,.52) 0%, transparent 64%),
+        radial-gradient(36% 32% at 82% 22%, rgba(61,214,140,.30) 0%, transparent 66%);
+      filter: blur(26px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* A grid this faint is not read as a grid — it just stops the dark
+       reading as empty, and fades out before it reaches the content. */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.016) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(100% 58% at 50% 0%, #000 0%, transparent 78%);
+              mask-image: radial-gradient(100% 58% at 50% 0%, #000 0%, transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    header, section, footer { position: relative; z-index: 1; }
+
+    /* --- 2. Type. 2.9rem on a 1500px screen reads as a subheading. --- */
+    h1 {
+      font-size: clamp(2.4rem, 5.6vw, 4.4rem);
+      letter-spacing: -0.045em;
+      line-height: 1.04;
+      font-weight: 620;
+      max-width: 17ch;
+    }
+    .lede {
+      font-size: clamp(15px, 1.35vw, 18px);
+      line-height: 1.58;
+      max-width: 54ch;
+      margin-top: 22px;
+    }
+    h2 {
+      font-size: clamp(1.7rem, 3.2vw, 2.5rem) !important;
+      letter-spacing: -0.032em;
+      line-height: 1.14;
+      font-weight: 600;
+    }
+
+    /* --- 3. Rhythm. Every section ran into the next at the same weight,
+       so the page read as one long column. A hairline that fades at both
+       ends separates them without drawing a box. --- */
+    section { padding: 92px 0; }
+    section + section { border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--border) 18%, var(--border) 82%, transparent) 1; }
+    .hero { padding: 84px 0 64px; }
+
+    /* --- 4. CTAs. Flat rectangles on a flat page; the primary action now
+       carries the accent's own light and lifts under the cursor. --- */
+    .btn {
+      padding: 12px 22px;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out,
+                  color 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
+    }
+    .btn-primary { box-shadow: 0 6px 22px -8px rgba(77,168,255,.55); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 30px -10px rgba(77,168,255,.68); }
+    .btn-secondary:hover { transform: translateY(-1px); background: rgba(255,255,255,.035); border-color: var(--border-strong); }
+    .btn:active { transform: translateY(0); }
+
+    /* --- 5. Scroll reveal. The whole page arrived fully formed, which is
+       what made it feel static. `.rv` is applied by script, so with JS off
+       (or reduced motion) the content is simply visible. --- */
+    .rv {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 620ms cubic-bezier(.22,.61,.36,1),
+                  transform 620ms cubic-bezier(.22,.61,.36,1);
+      transition-delay: var(--rv-d, 0ms);
+      will-change: opacity, transform;
+    }
+    .rv.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .btn:hover { transform: none !important; }
+      body::before { filter: none; }
+    }
+
+    @media (max-width: 720px) {
+      section { padding: 62px 0; }
+      .hero { padding: 54px 0 40px; }
+      body::after { background-size: 40px 40px; }
+    }
+
+
+    /* --- 6. Grain. Over a gradient this reads as film; over flat black it
+       would do nothing, so it only earns its place next to the glow above. --- */
+    body > .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: .07;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* --- 7. One lift token instead of five ad-hoc shadows. The top inner
+       hairline is light from above; the outer inset keeps the edge crisp. --- */
+    :root {
+      --lift: 0 1px 0 0 rgba(255,255,255,.10) inset,
+              0 30px 50px -18px rgba(0,0,0,.55),
+              0 4px 24px 0 rgba(77,168,255,.07),
+              0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .panel-shell, .desk { box-shadow: var(--lift); }
+
+    /* --- 8. Sticky nav only grows an edge once the page has moved under
+       it; at rest it should not draw a line across the hero. --- */
+    header {
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(11,13,17,.72);
+      border-bottom: 1px solid transparent;
+      transition: border-color 200ms ease-out, background-color 200ms ease-out;
+    }
+    header.stuck { border-bottom-color: var(--border); background: rgba(11,13,17,.88); }
+
+    @media (prefers-reduced-motion: reduce) { body > .grain { display: none; } }
+
+
+    /* --- 9. On a wide screen a left-flush 62ch column leaves half the
+       canvas empty. Centring the measure keeps the page composed. --- */
+    @media (min-width: 900px) {
+      .section-label, section > .wrap > h2, section > .wrap > .lede,
+      section > .wrap > p, .pull { margin-left: auto; margin-right: auto; }
+      section > .wrap > h2, section > .wrap > .lede, section > .wrap > p { text-align: center; }
+      .section-label { text-align: center; }
+      .pull { max-width: 46ch; text-align: center; }
+    }
+
+
+    /* --- 10. The capture is a still at its native 1283x561. Capping the width
+       at that stops the browser upscaling it into the mush it was before. --- */
+    .real-frame img {
+      display: block;
+      width: 100%;
+      max-width: 1960px;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 12px;
+    }
+
+
+    /* --- 11. A question is an exclusive surface, not a row accessory.
+       Island.swift keys the view on `.id(island.state.surface)`, so crossing
+       into a question REPLACES the panel. The demo used to nest the card
+       inside a row, which showed a layout the app never renders.
+
+       Done in CSS so the DOM, the state machine and the tests are untouched:
+       in state 2 every row collapses except the one holding the card, and
+       that row sheds its own chrome so the card owns the panel. --- */
+    [data-state="2"] .rows > .row:not(.row-b) {
+      display: none;
+    }
+    [data-state="2"] .row-b {
+      display: block;
+      padding: 0;
+      background: none;
+      border: 0;
+    }
+    /* The row's own identity lines would sit above the card like a header the
+       app does not draw; the card carries its own agent name. */
+    [data-state="2"] .row-b > .row-left,
+    [data-state="2"] .row-b > .row-right,
+    [data-state="2"] .row-b > .row-main > .row-line1,
+    [data-state="2"] .row-b > .row-main > .row-line2,
+    [data-state="2"] .row-b > .row-main > .row-line3 {
+      display: none;
+    }
+    [data-state="2"] .row-b .q-reveal > div { padding: 0; }
+    /* The second question lives in another row and must stay down, or both
+       cards appear at once. */
+    [data-state="2"] .q2-reveal { grid-template-rows: 0fr; }
+    [data-state="2"] .q2-reveal > div { opacity: 0; }
+
+
+    /* ====================================================================
+       v3 — bento asymmetry, hairlines, parallax and live counters.
+       ==================================================================== */
+
+    /* --- 12. Bento. Three equal columns read as a spec table; the context
+       ring is the lead signal, so it earns the wide cell. --- */
+    @media (min-width: 900px) {
+      .lead-caps {
+        grid-template-columns: 1.6fr 1fr 1fr;
+        grid-auto-rows: minmax(0, auto);
+        gap: 14px;
+      }
+      .lead-cap:first-child {
+        display: flex;
+        flex-direction: column;
+      }
+      .lead-cap:first-child h3 { font-size: 17px; }
+      .lead-cap:first-child p  { font-size: 14px; }
+    }
+
+    /* --- 13. Hairlines. A 1px border at dpr 2 is two device pixels and reads
+       heavy; 0.5px via a shadow stays a true hairline on retina. --- */
+    .lead-cap, .cap-list li, .real-frame {
+      border-color: transparent;
+      box-shadow: 0 0 0 0.5px rgba(255,255,255,.09),
+                  0 1px 2px -1px rgba(0,0,0,.6);
+    }
+    .lead-cap {
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 200ms ease-out, transform 200ms ease-out,
+                  background-color 200ms ease-out;
+    }
+    .lead-cap:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 0.5px rgba(255,255,255,.16),
+                  0 18px 34px -18px rgba(0,0,0,.75),
+                  0 4px 20px -8px rgba(77,168,255,.14);
+    }
+    /* A pointer-tracked sheen, so the card reacts to where the cursor is
+       rather than merely that it arrived. */
+    .lead-cap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 220ms ease-out;
+      background: radial-gradient(260px 200px at var(--mx, 50%) var(--my, 0%),
+                                  rgba(77,168,255,.10), transparent 68%);
+    }
+    .lead-cap:hover::after { opacity: 1; }
+
+    /* --- 14. Parallax. Transform and opacity only, and tiny: the hero should
+       feel like it has depth, not like it is sliding around. --- */
+    .hero-stage, .hero-copy {
+      transition: transform 420ms cubic-bezier(.22,.61,.36,1);
+      will-change: transform;
+    }
+
+    /* --- 15. Counters animate from zero when scrolled into view, so the
+       numbers read as measured rather than printed. --- */
+    .count { font-variant-numeric: tabular-nums; }
+
+    /* --- 16. CTA micro-state: the arrow leads, the fill deepens inward. --- */
+    .btn-primary .arw {
+      display: inline-block;
+      transition: transform 180ms cubic-bezier(.22,.61,.36,1);
+    }
+    .btn-primary:hover .arw { transform: translateX(3px); }
+    .btn-primary:hover {
+      box-shadow: 0 12px 30px -10px rgba(77,168,255,.68),
+                  inset 0 -2px 10px rgba(0,0,0,.18);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-stage, .hero-copy { transform: none !important; transition: none; }
+      .lead-cap:hover { transform: none; }
+    }
+
+
+    /* --- 17. Facts strip, moved out of the hero. Quiet by design: it is
+       supporting evidence, not a competing call to action. --- */
+    .facts-band {
+      position: relative;
+      z-index: 1;
+      padding: 0 0 10px;
+    }
+    .facts-band .hero-meta {
+      justify-content: center;
+      margin: 0;
+    }
+
+
+    /* --- 18. FAQ. <details> so it works with JS off and gets keyboard
+       navigation for free. One hairline between items rather than a border
+       box per row, which reads as a list instead of six cards. --- */
+    .faq {
+      max-width: 72ch;
+      margin: 28px auto 0;
+    }
+    .faq-item {
+      border-top: 1px solid var(--border);
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-item > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 34px 18px 0;
+      position: relative;
+      font-size: 15.5px;
+      font-weight: 550;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      transition: color 150ms ease-out;
+    }
+    .faq-item > summary::-webkit-details-marker { display: none; }
+    .faq-item > summary:hover { color: var(--accent); }
+    .faq-item > summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    /* A plus that becomes a minus. Rotation only, so it stays on the
+       compositor and respects reduced motion without a second rule. */
+    .faq-item > summary::after {
+      content: "";
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      width: 11px;
+      height: 11px;
+      margin-top: -5.5px;
+      background:
+        linear-gradient(var(--faint), var(--faint)) center/11px 1.5px no-repeat,
+        linear-gradient(var(--faint), var(--faint)) center/1.5px 11px no-repeat;
+      transition: transform 220ms cubic-bezier(.22,.61,.36,1);
+    }
+    .faq-item[open] > summary::after { transform: rotate(45deg); }
+    .faq-item[open] > summary { color: var(--text); }
+    .faq-body {
+      padding: 0 34px 20px 0;
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.65;
+    }
+    .faq-body p { margin: 0 0 12px; }
+    .faq-body p:last-child { margin-bottom: 0; }
+    .faq-body b { color: var(--text); font-weight: 600; }
+    .faq-body code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-edge);
+      border-radius: 5px;
+      padding: 1px 6px;
+    }
+    .faq-code {
+      margin: 0;
+      padding: 12px 14px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    .faq-code code {
+      background: none;
+      border: 0;
+      padding: 0;
+      color: var(--text);
+      font-size: 12.5px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .faq-item > summary::after { transition: none; }
+    }
+    @media (max-width: 640px) {
+      .faq-body, .faq-item > summary { padding-right: 28px; }
+    }
+
+
+    /* --- 19. Facts strip. Four numbers read out of the source, not a logo
+       wall: there are no customer logos to show, and inventing them would
+       be a lie. Numbers the reader can check beat borrowed credibility. --- */
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      justify-content: center;
+      gap: 0 46px;
+      list-style: none;
+      margin: 0 0 14px;
+      padding: 0;
+    }
+    .facts li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .facts b {
+      font-family: var(--mono);
+      font-size: 23px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .facts span {
+      font-size: 11.5px;
+      color: var(--faint);
+      letter-spacing: 0.01em;
+      text-align: center;
+    }
+    @media (max-width: 720px) {
+      .facts {
+        grid-template-columns: repeat(2, auto);
+        gap: 18px 34px;
+      }
+    }
+
+
+    /* ====================================================================
+       v4 — the signals section. Two problems: cards of unequal content
+       left their meta lines floating at different heights, and a six-row
+       list with a hairline under every row is the laziest layout there is.
+       ==================================================================== */
+
+    /* --- 20. Cards. A column with the meta pinned to the bottom, so three
+       cards of different text length still line their numbers up. --- */
+    .lead-cap {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 20px 18px;
+    }
+    .lead-cap h3 {
+      font-size: 15px;
+      line-height: 1.3;
+      /* Two-word orphans in these headings were breaking "projected
+         exhaustion" onto its own line. */
+      text-wrap: balance;
+    }
+    .lead-cap p {
+      font-size: 13.5px;
+      margin-bottom: 18px;
+    }
+    .lead-cap .cap-meta {
+      margin-top: auto;          /* pins to the bottom whatever the body length */
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* --- 21. The six capabilities. Was a <ul> with border-top on every row:
+       twelve hairlines, no visual, nothing to look at. Now a card each, with
+       the label doing the work the hairline was doing. --- */
+    .cap-list {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      column-gap: 10px;
+      margin-top: 14px;
+    }
+    .cap-list li {
+      border-top: 0;
+      padding: 16px 16px 15px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 0 0 0.5px rgba(255,255,255,.07);
+      transition: box-shadow 180ms ease-out, transform 180ms ease-out;
+      font-size: 13px;
+    }
+    .cap-list li:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 0.5px rgba(255,255,255,.14),
+                  0 12px 24px -16px rgba(0,0,0,.7);
+    }
+    /* The bold lead becomes the card's own heading rather than a run-in. */
+    .cap-list b {
+      display: block;
+      margin: 0 0 5px;
+      font-size: 13.5px;
+      letter-spacing: -0.01em;
+    }
+    /* Five items in a three-column grid leaves a hole in the last row. This
+       list gets two columns, which divides 5 into 3 + 2 with the last cell
+       spanning: no empty tile, no orphan. */
+    #acts .cap-list { grid-template-columns: repeat(2, 1fr); }
+    #acts .cap-list li:last-child { grid-column: 1 / -1; }
+
+    @media (max-width: 900px) {
+      .cap-list { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .cap-list,
+      #acts .cap-list { grid-template-columns: 1fr; }
+      #acts .cap-list li:last-child { grid-column: auto; }
+    }
+
+
+    /* --- 22. All three cards take the height of the tallest, so their meta
+       lines land on one baseline instead of each floating in its own box. --- */
+    .lead-caps { align-items: stretch; }
+
+
+    /* --- 23. With equal heights, the shortest body leaves the widest gap.
+       Capping the measure evens the three bodies out. --- */
+    @media (min-width: 900px) {
+      .lead-cap p { max-width: 42ch; }
+      .lead-cap:first-child p { max-width: 46ch; }
+    }
+
+
+    /* --- 24. The notch read as a separate chip floating above the panel.
+       Geometry was never the problem: the two overlap by 10px and share a
+       centre. The panel carries a 1px hairline down its sides and the notch
+       carried none, so on a dark page the outlined frame and the bare black
+       chip looked like two objects.
+
+       The notch now wears the same hairline on the sides it actually shows,
+       and the seam between them is painted over so the two outlines join
+       into one continuous silhouette. --- */
+    .panel-notch {
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: none;
+      /* The border adds 2px, which would push it off the panel's centre. */
+      box-sizing: content-box;
+    }
+    /* Where the notch sits on the panel, both have a hairline running through
+       the join. This covers that 10px of overlap so one silhouette reads. */
+    .panel-notch::after {
+      content: "";
+      position: absolute;
+      left: -1px;
+      right: -1px;
+      bottom: -11px;
+      height: 12px;
+      background: #000;
+      z-index: 1;
+    }
+
+
+    /* --- 25. Phone. The card treatment that gives three lead signals weight
+       on a wide screen turns into nine identical slabs in one column: 1.6
+       viewports of scrolling with nothing to anchor the eye.
+
+       The three lead signals stay cards, tightened. The six supporting
+       capabilities stop being cards entirely and become a plain divided
+       list, which is what they always were in content terms. --- */
+    @media (max-width: 640px) {
+      #shows .lead-caps { gap: 8px; }
+      .lead-cap {
+        padding: 15px 15px 13px;
+        border-radius: 9px;
+      }
+      .lead-cap h3 { font-size: 14.5px; }
+      .lead-cap p {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+      .lead-cap .cap-meta { padding-top: 10px; }
+
+      /* Not cards. Six boxes of equal weight below three real ones read as
+         more of the same; a divided list reads as a footnote to them. */
+      #shows .cap-list { margin-top: 20px; gap: 0; }
+      #shows .cap-list li {
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        border-top: 1px solid var(--border);
+        padding: 13px 2px 12px;
+      }
+      #shows .cap-list li:last-child { border-bottom: 1px solid var(--border); }
+      #shows .cap-list li:hover { transform: none; box-shadow: none; }
+      #shows .cap-list b {
+        display: inline;      /* back to a run-in lead, not a heading */
+        margin-right: 6px;
+      }
+    }
+
+
+
+
+
+
+    /* --- 26. Phone: close the band of wallpaper between the menu bar and the
+       panel. The notch hangs in that 17px gap but is only 134px wide, so the
+       wallpaper either side of it is what made it read as a separate chip.
+
+       Pulling the panel up to meet the bar removes the gap entirely: the bar,
+       the notch and the panel become one continuous black edge, and the notch
+       stops being a thing you notice on its own. --- */
+    @media (max-width: 640px) {
+      /* `.desk .panel-shell` sets `margin: 0 auto` and is more specific than a
+         bare `.panel-shell`, so the pull-up has to match that weight to win. */
+      .desk .panel-shell { margin-top: -17px; }
+      /* The notch keeps its own 10px overlap onto the panel; it just has no
+         wallpaper behind it any more. */
+      .panel-notch { margin-bottom: -10px; }
+      /* That overlap lands on the quota line, so the head takes it back as
+         padding rather than letting the notch sit on the numbers. */
+      .panel-head { padding-top: 14px; }
+    }
+
+
+    /* ====================================================================
+       v5 — scramble, a lit row, tab affordances, and a drifting aurora.
+       Every rule here is additive: the markup, fonts and chrome underneath
+       are untouched.
+       ==================================================================== */
+
+    /* --- 27. The vendor name resolves letter by letter in the headline's own
+       face. `overflow:hidden` on an inline-block makes its own bottom edge the
+       baseline, which lifted the word off the line; `vertical-align` pins it
+       back. --- */
+    .vend {
+      display: inline-block;
+      vertical-align: baseline;
+      text-align: left;
+    }
+    /* Each slot is sized to its final letter and centres whatever is drawn in
+       it, so a wide block glyph cannot widen the headline mid-resolve. */
+    .vend .ch {
+      display: inline-block;
+      width: var(--w);
+      text-align: center;
+      /* No `overflow:hidden`: on an inline-block it makes the box's own bottom
+         edge the baseline, which lifted every letter off the line. */
+      vertical-align: baseline;
+    }
+    .vend .ch.raw { color: var(--faint); opacity: .32; }
+    /* The old cross-fade would fight the per-letter resolve. */
+    .vend.swap { animation: none; }
+
+    /* --- 28. A row waiting on you wears a ring. It is a pseudo-element masked
+       to 1px over the row, so the row's own background, border and contents
+       are exactly as they were. Only one row in a list should ever be lit. --- */
+    @property --eb { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    .row.lit { position: relative; }
+    .row.lit::before,
+    .row.lit::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      background: conic-gradient(from var(--eb),
+        transparent 0deg, var(--amber) 45deg, transparent 110deg,
+        transparent 250deg, var(--amber) 295deg, transparent 360deg);
+      animation: eb 3.4s linear infinite;
+    }
+    .row.lit::before {
+      padding: 1px;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+    }
+    /* The outer bloom sat 3px proud of a row that already fills the panel, so
+       it smeared over the panel edge. The masked ring alone carries it. */
+    .row.lit::after { display: none; }
+    @keyframes eb { to { --eb: 360deg; } }
+
+    /* --- 29. The tabs keep their chip. Three things sit on top of it: a rail
+       that slides to the active one, a bar that shows the autoplay cycle, and
+       the same hover lift the CTAs already use. --- */
+    .panel-tabs { position: relative; padding-bottom: 9px; }
+    .tab-rail {
+      position: absolute;
+      left: 0; bottom: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 10px -1px var(--accent);
+      transition: transform .34s cubic-bezier(.22,.61,.36,1),
+                  width .34s cubic-bezier(.22,.61,.36,1);
+      pointer-events: none;
+    }
+    .ptab {
+      position: relative;
+      transition: color .15s, border-color .15s, background .15s,
+                  transform .18s cubic-bezier(.22,.61,.36,1), box-shadow .18s ease-out;
+    }
+    .ptab:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -12px rgba(0,0,0,.9); }
+    .ptab:active { transform: translateY(0); }
+    .ptab.active { box-shadow: 0 0 0 1px var(--accent-edge), 0 6px 16px -10px rgba(77,168,255,.55); }
+    /* Only while the carousel is driving: once a visitor clicks, it stops. */
+    .panel-tabs.playing .ptab.active::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -1px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+      opacity: .85;
+      animation: tabfill 2s linear infinite;
+    }
+    @keyframes tabfill { from { width: 0 } to { width: 100% } }
+
+    /* --- 30. The hero's two light pools drift. They were already there and
+       static; this only moves them. --- */
+    body::before { animation: aurora1 19s ease-in-out infinite alternate; }
+    body::after  { animation: aurora2 24s ease-in-out infinite alternate; }
+    @keyframes aurora1 { to { transform: translate3d(3%, 2%, 0) scale(1.06); } }
+    @keyframes aurora2 { to { transform: translate3d(-3%, 2%, 0) scale(1.04); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .row.lit::before, .row.lit::after,
+      .panel-tabs.playing .ptab.active::after,
+      body::before, body::after { animation: none; }
+      .tab-rail { transition: none; }
+      .ptab:hover { transform: none; }
+    }
+
+
+    /* --- 31. The headline wrapped to three lines. Not the scramble: `h1` is
+       capped at 22ch and the second line is 30 characters, so "have." was
+       always falling through. Each .h1-line is its own block and must not
+       wrap, so the measure is sized to the longer of the two. --- */
+    h1 { max-width: none; }
+    .h1-line { display: block; width: auto; }
+    /* `nowrap` forced the longer line past the container and clipped "have.".
+       The line has to FIT, not be held on one row: size the type to the space
+       instead. 4.4vw overflowed at this measure; 3.9 clears it with the same
+       cap on wide screens. */
+    @media (min-width: 761px) {
+      h1 { font-size: clamp(1.9rem, 3.9vw, 2.9rem); }
+    }
+
+    /* --- 32. Every row that is blocked wears the ring, not just the last one.
+       The demo panel has two blocked states; lighting one made it look like a
+       property of that row rather than of the state. --- */
+    .row:has(.st-blocked) { position: relative; }
+    .row:has(.st-blocked)::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      padding: 1px;
+      background: conic-gradient(from var(--eb),
+        transparent 0deg, var(--amber) 45deg, transparent 110deg,
+        transparent 250deg, var(--amber) 295deg, transparent 360deg);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      animation: eb 3.4s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .row:has(.st-blocked)::before { animation: none; }
+    }
+
+
+    /* --- 33. The headline is centred, so a short vendor ("Cursor") and a long
+       one ("Claude Code") re-centre the whole line: "Every" slides left and
+       right every few seconds, which reads as the page twitching.
+
+       Reserving the widest name once makes the line length constant, so the
+       only thing that ever moves is the vendor's own letters. --- */
+    .vend { min-width: 0; text-align: left; }
+    /* The headline is centred, so a short vendor re-centres the whole line and
+       "Every" slides 40px. Reserving the first line's width freezes that edge;
+       the text inside stays centred, so no name is padded. */
+    .hero h1 .h1-line:first-child {
+      width: var(--line-w, auto);
+      margin-inline: auto;
+      text-align: left;        /* the frozen box centres; its words must not */
+      white-space: nowrap;
+    }
+
+
+    /* --- 34. The aurora painted but nothing could see it: its pools sat under
+       the 86%-opaque header, and .hero (z-index 1) covered the z-index 0 layer.
+       The pools now sit in open space below the header, and the layer sits
+       behind the content rather than behind the whole page. --- */
+    body::before { z-index: 0; }
+    .hero { position: relative; z-index: 1; background: none; }
+
+
+    /* --- 35. The demo video. `preload="none"` so a 4MB file costs nothing
+       until someone presses play; the poster carries the frame meanwhile. --- */
+    .real-frame video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 1180px;
+      margin: 0 auto;
+      border-radius: 12px;
+      background: var(--code-bg);
+    }
+
+
+    /* --- 36. A centred play control on the poster. The browser's own bar sits
+       at the bottom edge and reads as chrome, not as an invitation; this is
+       the thing the eye lands on. Native controls take over on play. --- */
+    .video-wrap { position: relative; }
+    .video-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      background: radial-gradient(42% 46% at 50% 48%, rgba(5,8,13,.72) 0%, rgba(5,8,13,.40) 60%, rgba(5,8,13,.30) 100%);
+      color: var(--text);
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: opacity 260ms ease-out, background-color 200ms ease-out;
+    }
+    .video-wrap[data-state="playing"] .video-play {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .vp-ring {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: rgba(13,30,51,.72);
+      box-shadow: 0 0 0 1px var(--accent-edge),
+                  0 18px 40px -16px rgba(0,0,0,.9),
+                  0 0 34px -10px rgba(77,168,255,.5);
+      backdrop-filter: blur(10px);
+      transition: transform 200ms cubic-bezier(.22,.61,.36,1),
+                  box-shadow 200ms ease-out, background-color 200ms ease-out;
+    }
+    .vp-ring svg { width: 34px; height: 34px; fill: var(--accent); margin-left: 3px; }
+    /* Its own pill: the label used to sit straight on whatever the frame was
+       showing, which on a busy frame read as two texts overlapping. */
+    .vp-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(5,8,13,.78);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.09);
+      backdrop-filter: blur(8px);
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: -0.01em;
+    }
+    .vp-dur {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .video-play:hover .vp-ring {
+      transform: scale(1.07);
+      background: rgba(77,168,255,.22);
+      box-shadow: 0 0 0 1px var(--accent),
+                  0 22px 46px -16px rgba(0,0,0,.95),
+                  0 0 44px -8px rgba(77,168,255,.7);
+    }
+    .video-play:active .vp-ring { transform: scale(1); }
+    .video-play:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .video-play, .vp-ring { transition: none; }
+      .video-play:hover .vp-ring { transform: none; }
+    }
+
   </style>
 </head>
 <body>
+  <div class="grain" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- ============================ NAV ============================ -->
@@ -1551,21 +2485,17 @@
         <h1><span class="h1-line">Every <span class="vend" data-testid="hero-vendor">Claude&nbsp;Code</span> run,</span>
           <span class="h1-line">in the notch you already have.</span></h1>
         <p class="lede">
-          Agent Island turns the MacBook notch into a live dashboard for your AI coding
-          agents. Which one is blocked, which one is asking, which one is burning
-          through its quota — answered without switching windows.
+          Run five agents and the bottleneck becomes you.
+          One is blocked, one is asking, and nothing says which.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#install" data-testid="hero-get-button">Get Agent Island</a>
+          <a class="btn btn-primary" href="#install" data-testid="hero-get-button">Get Agent Island <span class="arw" aria-hidden="true">→</span></a>
           <a class="btn btn-secondary" href="#install" data-testid="hero-install-button">Install instructions</a>
         </div>
-        <p class="hero-meta" data-testid="hero-meta">
-          <span>macOS 14+</span><span>Swift / AppKit</span><span>MIT licence</span>
-        </p>
         </div>
 
         <!-- ============================================================
-             LIVE PANEL — the product, recreated in DOM. Not a screenshot.
+             LIVE PANEL: the product, recreated in DOM. Not a screenshot.
              Four demo states cycle on a timer (script at end of file);
              dots below let a visitor jump between them.
              To wire real data: swap the .row <li> items and the
@@ -1587,14 +2517,14 @@
           </div>
           <div class="desk-body">
             <div class="term term-back" aria-hidden="true">
-              <div class="term-bar"><i></i><i></i><i></i><span>codex — terraform-plan</span></div>
+              <div class="term-bar"><i></i><i></i><i></i><span>codex / terraform-plan</span></div>
               <pre>plan the VPC peering change and hold before apply
 <span class="tg">Read(main.tf)</span>
   └── 4.1 KB
 <span class="tg">Plan: 3 to add, 1 to change</span></pre>
             </div>
             <div class="term term-front" aria-hidden="true">
-              <div class="term-bar"><i></i><i></i><i></i><span>claude — api-gateway</span></div>
+              <div class="term-bar"><i></i><i></i><i></i><span>claude / api-gateway</span></div>
               <pre>Let me look at the health-check test.
 <span class="tm">Searching for 4 patterns…</span>
 <span class="tm">Read 2 files</span>
@@ -1627,7 +2557,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
               <!-- row A: working agent, Claude Code in Warp -->
               <li class="row row-a">
                 <div class="row-left">
-                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#39414F"/><rect x="1" y="0" width="1" height="1" fill="#39414F"/><rect x="3" y="0" width="1" height="1" fill="#4C5668"/><rect x="1" y="1" width="1" height="1" fill="#4C5668"/><rect x="2" y="1" width="1" height="1" fill="#3DD68C"/><rect x="0" y="2" width="1" height="1" fill="#39414F"/><rect x="2" y="2" width="1" height="1" fill="#4C5668"/><rect x="3" y="3" width="1" height="1" fill="#39414F"/><rect x="1" y="3" width="1" height="1" fill="#4C5668"/></svg>
+                  <svg class="avatar" viewBox="0 0 240 240" aria-hidden="true"><rect x="20" y="20" width="200" height="200" rx="48" fill="#7ABE7D"/><g clip-path="url(#av0a)"><ellipse cx="86" cy="126" rx="23" ry="25" fill="#233323"/><rect x="26" y="34" width="120" height="60" fill="#7ABE7D" transform="rotate(0 86 94)"/><rect x="26" y="158" width="120" height="60" fill="#7ABE7D" transform="rotate(0 86 158)"/></g><g clip-path="url(#av0b)"><ellipse cx="154" cy="126" rx="23" ry="25" fill="#233323"/><rect x="94" y="34" width="120" height="60" fill="#7ABE7D" transform="rotate(0 154 94)"/><rect x="94" y="158" width="120" height="60" fill="#7ABE7D" transform="rotate(0 154 158)"/></g><defs><clipPath id="av0a"><rect x="46" y="72" width="80" height="108"/></clipPath><clipPath id="av0b"><rect x="114" y="72" width="80" height="108"/></clipPath></defs></svg>
                   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                 </div>
                 <div class="row-main">
@@ -1651,7 +2581,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
               <!-- row B: working agent that asks a question (state 2) and expands (state 4) -->
               <li class="row row-b">
                 <div class="row-left">
-                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="2" y="0" width="1" height="1" fill="#4C5668"/><rect x="0" y="1" width="1" height="1" fill="#39414F"/><rect x="3" y="1" width="1" height="1" fill="#39414F"/><rect x="1" y="2" width="1" height="1" fill="#3DD68C"/><rect x="2" y="2" width="1" height="1" fill="#39414F"/><rect x="0" y="3" width="1" height="1" fill="#4C5668"/><rect x="3" y="3" width="1" height="1" fill="#4C5668"/><rect x="1" y="0" width="1" height="1" fill="#39414F"/></svg>
+                  <svg class="avatar" viewBox="0 0 240 240" aria-hidden="true"><rect x="20" y="20" width="200" height="200" rx="48" fill="#4FB8E6"/><g clip-path="url(#av1a)"><ellipse cx="86" cy="126" rx="23" ry="25" fill="#1A313C"/><rect x="26" y="34" width="120" height="60" fill="#4FB8E6" transform="rotate(0 86 94)"/><rect x="26" y="158" width="120" height="60" fill="#4FB8E6" transform="rotate(0 86 158)"/></g><g clip-path="url(#av1b)"><ellipse cx="154" cy="126" rx="23" ry="25" fill="#1A313C"/><rect x="94" y="34" width="120" height="60" fill="#4FB8E6" transform="rotate(0 154 94)"/><rect x="94" y="158" width="120" height="60" fill="#4FB8E6" transform="rotate(0 154 158)"/></g><defs><clipPath id="av1a"><rect x="46" y="72" width="80" height="108"/></clipPath><clipPath id="av1b"><rect x="114" y="72" width="80" height="108"/></clipPath></defs></svg>
                   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                 </div>
                 <div class="row-main">
@@ -1688,7 +2618,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                           <span class="q-body">
                             <span class="q-lab">Pin rustls to 0.23</span>
                             <span class="q-det">Match what CI resolves. One line in Cargo.toml, and the lockfile stops drifting from the test.</span>
-                            <span class="q-why"><span class="q-bulb" aria-hidden="true">&#128161;</span>The honest fix — the skew is real and will reach production otherwise.</span>
+                            <span class="q-why"><span class="q-bulb" aria-hidden="true">&#128161;</span>The honest fix. The skew is real and will reach production otherwise.</span>
                           </span>
                         </button>
                         <button class="q-opt" data-testid="q-opt-2">
@@ -1760,7 +2690,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
               <!-- row C: finishes its run in state 1 -->
               <li class="row row-c" data-testid="row-finishes">
                 <div class="row-left">
-                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#4C5668"/><rect x="3" y="0" width="1" height="1" fill="#39414F"/><rect x="1" y="1" width="1" height="1" fill="#39414F"/><rect x="2" y="1" width="1" height="1" fill="#39414F"/><rect x="0" y="2" width="1" height="1" fill="#3DD68C"/><rect x="3" y="2" width="1" height="1" fill="#4C5668"/><rect x="1" y="3" width="1" height="1" fill="#39414F"/><rect x="2" y="3" width="1" height="1" fill="#4C5668"/></svg>
+                  <svg class="avatar" viewBox="0 0 240 240" aria-hidden="true"><rect x="20" y="20" width="200" height="200" rx="48" fill="#C196E2"/><g clip-path="url(#av2a)"><ellipse cx="86" cy="126" rx="23" ry="25" fill="#33293B"/><rect x="26" y="34" width="120" height="60" fill="#C196E2" transform="rotate(0 86 94)"/><rect x="26" y="158" width="120" height="60" fill="#C196E2" transform="rotate(0 86 158)"/></g><g clip-path="url(#av2b)"><ellipse cx="154" cy="126" rx="23" ry="25" fill="#33293B"/><rect x="94" y="34" width="120" height="60" fill="#C196E2" transform="rotate(0 154 94)"/><rect x="94" y="158" width="120" height="60" fill="#C196E2" transform="rotate(0 154 158)"/></g><defs><clipPath id="av2a"><rect x="46" y="72" width="80" height="108"/></clipPath><clipPath id="av2b"><rect x="114" y="72" width="80" height="108"/></clipPath></defs></svg>
                   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                 </div>
                 <div class="row-main">
@@ -1768,7 +2698,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                   <div class="row-line2"><b>You:</b> plan the VPC peering change and hold before apply</div>
                   <div class="row-line3">
                     <span class="st-busy">busy</span><span class="dot-sep sep4" aria-hidden="true">·</span>
-                    <span class="st-done">finished · exit 0</span>
+                    <span class="st-done">completed</span>
                     <span class="tool"><b>Bash</b>terraform plan -out=tf.plan</span>
                   </div>
                 </div>
@@ -1788,7 +2718,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
               <!-- row D: blocked agent; the jump target in state 3 -->
               <li class="row row-d" data-testid="row-jump">
                 <div class="row-left">
-                  <svg class="avatar" viewBox="0 0 4 4" aria-hidden="true"><rect x="1" y="0" width="1" height="1" fill="#39414F"/><rect x="2" y="0" width="1" height="1" fill="#4C5668"/><rect x="0" y="1" width="1" height="1" fill="#4C5668"/><rect x="3" y="1" width="1" height="1" fill="#39414F"/><rect x="1" y="2" width="1" height="1" fill="#4C5668"/><rect x="2" y="2" width="1" height="1" fill="#39414F"/><rect x="0" y="3" width="1" height="1" fill="#39414F"/><rect x="3" y="3" width="1" height="1" fill="#E5B25A"/></svg>
+                  <svg class="avatar" viewBox="0 0 240 240" aria-hidden="true"><rect x="20" y="20" width="200" height="200" rx="48" fill="#E7926C"/><g clip-path="url(#av3a)"><ellipse cx="86" cy="126" rx="35" ry="35" fill="#3D281F"/><rect x="26" y="24" width="120" height="60" fill="#E7926C" transform="rotate(0 86 84)"/><rect x="26" y="168" width="120" height="60" fill="#E7926C" transform="rotate(0 86 168)"/></g><g clip-path="url(#av3b)"><ellipse cx="154" cy="126" rx="35" ry="35" fill="#3D281F"/><rect x="94" y="24" width="120" height="60" fill="#E7926C" transform="rotate(0 154 84)"/><rect x="94" y="168" width="120" height="60" fill="#E7926C" transform="rotate(0 154 168)"/></g><defs><clipPath id="av3a"><rect x="46" y="72" width="80" height="108"/></clipPath><clipPath id="av3b"><rect x="114" y="72" width="80" height="108"/></clipPath></defs></svg>
                   <span class="eq idle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                 </div>
                 <div class="row-main">
@@ -1874,21 +2804,35 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
                so the demo explains itself instead of leaving it to be inferred. -->
           <div class="panel-say" data-testid="panel-say">
             <p class="psay-h" data-for="1">Every agent. One glance.</p>
-            <p class="psay-s" data-for="1">Claude Code, Codex and Cursor in a single view — with the run that just finished.</p>
+            <p class="psay-s" data-for="1">Claude Code, Codex and Cursor in a single view, with the run that just finished.</p>
             <p class="psay-h" data-for="2">Answer without switching apps.</p>
-            <p class="psay-s" data-for="2">Any agent, the same card. Pick an option — or have the notch explain the question first.</p>
+            <p class="psay-s" data-for="2">Any agent, the same card. Pick an option, or have the notch explain the question first.</p>
             <p class="psay-h" data-for="5">Approve without switching apps.</p>
             <p class="psay-s" data-for="5">The diff comes to the notch. Allow or deny with a keystroke, and the agent carries on.</p>
             <p class="psay-h" data-for="3">Land on the exact tab.</p>
-            <p class="psay-s" data-for="3">One click focuses that agent's own terminal tab — not just the app.</p>
+            <p class="psay-s" data-for="3">One click focuses that agent's own terminal tab, not just the app.</p>
             <p class="psay-h" data-for="4">Read the thread, reply in place.</p>
             <p class="psay-s" data-for="4">Open a session for its conversation and answer without leaving what you are doing.</p>
           </div>
-          <p class="panel-caption">try it — pick an answer, jump a row, or type a reply</p>
+          <p class="panel-caption">try it: pick an answer, jump a row, or type a reply</p>
         </div>
         <!-- ====================== end live panel ====================== -->
       </div>
     </section>
+
+    <!-- Facts strip. Lives below the hero rather than inside it: a tagline
+         under the CTAs competes with the primary action. -->
+    <div class="facts-band">
+      <ul class="facts" data-testid="facts">
+        <li><b class="count" data-count="3">3</b><span>agents tracked</span></li>
+        <li><b class="count" data-count="6">6</b><span>terminals it can jump to</span></li>
+        <li><b>0</b><span>subprocesses per refresh</span></li>
+        <li><b>14+</b><span>macOS, Apple silicon and Intel</span></li>
+      </ul>
+      <p class="hero-meta" data-testid="hero-meta">
+        <span>Claude Code, Codex and Cursor</span><span>Swift / AppKit</span><span>MIT licence</span>
+      </p>
+    </div>
 
     <!-- ======================== THE PROBLEM ======================== -->
     <section class="problem" id="problem" aria-labelledby="problem-heading">
@@ -1908,16 +2852,27 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
          thing is real. Replace assets/demo.mp4 to update it. -->
     <section id="real" aria-labelledby="real-heading">
       <div class="wrap">
-        <p class="kicker">Recorded, not mocked</p>
         <h2 id="real-heading">The panel, running</h2>
-        <p class="lede real-lede">Three live sessions, their models and terminals, context and spend —
+        <p class="lede real-lede">Three live sessions, their models and terminals, context and spend,
           read from the agents themselves while they work.</p>
-        <div class="real-frame">
-          <video src="/assets/demo.mp4" poster="/assets/demo-poster.jpg"
-                 autoplay muted loop playsinline preload="metadata"
-                 data-testid="real-demo-video"></video>
+        <div class="real-frame video-wrap" data-state="idle">
+          <video src="/assets/demo-v1.mp4" poster="/assets/demo-v1-poster.jpg"
+                 width="1920" height="1080"
+                 muted playsinline preload="none"
+                 data-testid="real-demo-video"
+                 aria-label="Agent Island running: sessions appear in the notch, a question is
+                             answered from the panel, and a click lands in the agent's terminal tab.">
+          </video>
+          <button class="video-play" type="button" data-testid="real-demo-play"
+                  aria-label="Play the demo, forty seconds, no sound">
+            <span class="vp-ring" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5v9l7.5-4.5z"/></svg>
+            </span>
+            <span class="vp-label">Watch it run <span class="vp-dur">0:40</span></span>
+          </button>
         </div>
-        <p class="cap">A real capture of the app on this machine</p>
+        <p class="cap">Forty seconds of the app running on a real machine</p>
+
       </div>
     </section>
 
@@ -1930,18 +2885,18 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         <ul class="lead-caps">
           <li class="lead-cap" data-testid="lead-cap-1">
             <h3>Context-window pressure, per session</h3>
-            <p>Each session reports how full its context window is, so you compact before hitting the limit — not after the agent starts forgetting.</p>
-            <span class="cap-meta">ctx <b>82%</b> · compact suggested</span>
+            <p>Each session reports how full its context window is, so you compact before hitting the limit, not after the agent starts forgetting.</p>
+            <span class="cap-meta">ctx <b class="count" data-count="82" data-suffix="%">82%</b> · 290k</span>
           </li>
           <li class="lead-cap" data-testid="lead-cap-2">
             <h3>Quota, burn rate, projected exhaustion</h3>
             <p>Usage windows with the current burn rate and the clock time the quota runs out, for both the short and the weekly window.</p>
-            <span class="cap-meta">5h <b>25%</b> · 79%/h · full in 57m</span>
+            <span class="cap-meta">5h <b class="count" data-count="25" data-suffix="%">25%</b> · 79%/h · full in 57m</span>
           </li>
           <li class="lead-cap" data-testid="lead-cap-3">
             <h3>Died is not the same as finished</h3>
             <p>An agent that crashed is distinguished from one that completed its run. No more guessing at silent terminal tabs.</p>
-            <span class="cap-meta died">exit <b>1</b> · SIGTERM · 2m ago</span>
+            <span class="cap-meta died">died · <b>rate_limit</b> · 2m ago</span>
           </li>
         </ul>
 
@@ -1949,7 +2904,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
           <li data-testid="cap-4"><b>One list, every agent.</b>All running sessions in a single panel, labelled by vendor.</li>
           <li data-testid="cap-5"><b>Live session detail.</b>Title, project, model, terminal, and the current tool call, updated as it happens.</li>
           <li data-testid="cap-6"><b>Stale questions stay put.</b>Agents blocked on an old question remain visible without raising new alarms.</li>
-          <li data-testid="cap-7"><b>Task progress.</b>Step <code>4 of 9</code>, with the current step named.</li>
+          <li data-testid="cap-7"><b>Multi-part questions.</b>A question with several parts is answered one at a time, <code>2 of 4</code>.</li>
           <li data-testid="cap-8"><b>Cost per model.</b>Spend broken down by model, for today and this month.</li>
           <li data-testid="cap-9"><b>Remote sessions.</b>Agents on machines you SSH into appear in the same panel as local ones.</li>
         </ul>
@@ -1968,7 +2923,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
             <p>
               Multiple-choice questions are answered where they appear, with a free-text
               field when none of the options fit. A sliding countdown returns the question
-              to the terminal if you ignore it — and every interaction pushes the countdown
+              to the terminal if you ignore it, and every interaction pushes the countdown
               forward, so it never times out under you mid-sentence.
             </p>
             <span class="cap-meta">countdown <b>resets on keystroke</b> · hand back with one click</span>
@@ -2024,8 +2979,8 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         <h2 id="howto-heading">Click a session, land in its exact terminal tab</h2>
         <p>
           Every session in the panel carries the handle of the terminal tab it is running
-          in. That handle is read from the agent process's <em>own environment</em> — the
-          variables the terminal exported when it spawned the shell — not from any
+          in. That handle is read from the agent process's <em>own environment</em>: the
+          variables the terminal exported when it spawned the shell. It is not read from any
           terminal's session database. When you click a row, Agent Island uses the handle
           to focus that specific tab, in the terminal that owns it.
         </p>
@@ -2080,7 +3035,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         <p class="note" data-testid="howto-note">
           <strong>Why not read the terminal's database?</strong> Approaches that read a
           terminal's session store and replay keystrokes cannot distinguish tabs that
-          share a working directory — so in a monorepo, where six tabs all sit in
+          share a working directory, so in a monorepo, where six tabs all sit in
           <code>~/work/repo</code>, they land on the wrong one. The environment handle is
           unambiguous because the agent process itself carries it.
         </p>
@@ -2090,7 +3045,6 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
     <!-- =========================== INSTALL =========================== -->
     <section id="install" aria-labelledby="install-heading">
       <div class="wrap">
-        <p class="section-label">Install</p>
         <h2 id="install-heading">Three lines in, two lines out</h2>
 
         <div class="install-grid">
@@ -2129,6 +3083,86 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
       </div>
     </section>
 
+    <!-- ============================= FAQ =============================
+         <details>/<summary> so it works with JS off and is keyboard
+         navigable for free. The first question is the one that actually
+         loses downloads: the build is not notarised, so macOS shows a
+         dialog with no Open button on it. -->
+    <section id="faq" aria-labelledby="faq-heading">
+      <div class="wrap">
+        <h2 id="faq-heading">Before you install</h2>
+
+        <div class="faq" data-testid="faq">
+          <details class="faq-item" data-testid="faq-gatekeeper" open>
+            <summary>macOS says it cannot check the app for malicious software</summary>
+            <div class="faq-body">
+              <p>It will. The build is not notarised yet, so Gatekeeper shows a dialog
+                 whose only buttons are <b>Move to Trash</b> and <b>Cancel</b>. The app
+                 is not quarantined for anything it does; it has simply not been through
+                 Apple's notary service.</p>
+              <p>To open it the first time: right-click (or Control-click)
+                 <code>AgentIsland.app</code> in Finder, choose <b>Open</b>, then click
+                 <b>Open</b> in the dialog that follows. That dialog does have an Open
+                 button. macOS remembers the choice, so this is once per install.</p>
+              <p>If you prefer the terminal:</p>
+              <pre class="faq-code"><code>xattr -d com.apple.quarantine /Applications/AgentIsland.app</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item" data-testid="faq-permissions">
+            <summary>What permissions does it ask for, and why</summary>
+            <div class="faq-body">
+              <p><b>Automation</b>, and only when you first click a row to jump. Focusing
+                 another app's window is an AppleEvent, so macOS asks once per terminal.
+                 Decline it and everything else still works; you lose the jump.</p>
+              <p>There is no accessibility permission, no screen recording, and no network
+                 access. Session data is read from files the agents already write on your
+                 own disk.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-testid="faq-terminals">
+            <summary>Which terminals does it work with</summary>
+            <div class="faq-body">
+              <p>Jumping to the exact tab works in tmux, Warp, iTerm2, Terminal.app, kitty
+                 and WezTerm. Typing a reply back into the session works in
+                 <b>tmux, iTerm2, kitty and WezTerm</b>.</p>
+              <p>Terminal.app and Warp are read-only for replies on purpose: the only API
+                 either publishes runs its argument as a command rather than typing it,
+                 which is not a thing to point at someone's shell.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-testid="faq-cost">
+            <summary>Does it slow the machine down</summary>
+            <div class="faq-body">
+              <p>A refresh spawns zero subprocesses, and the test suite enforces that.
+                 Sessions are found by reading files, not by shelling out. When every
+                 agent is idle the panel animates nothing.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-testid="faq-agents">
+            <summary>Which agents does it track</summary>
+            <div class="faq-body">
+              <p>Claude Code, Codex and Cursor. Each is found through the files that agent
+                 already writes, so there is nothing to configure per project. Agents on
+                 machines you SSH into show up in the same list as local ones.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-testid="faq-uninstall">
+            <summary>How do I remove it</summary>
+            <div class="faq-body">
+              <p>Run <code>python3 scripts/uninstall-hooks.py</code> from the checkout,
+                 then move the app to the Trash. The script removes the hooks it added and
+                 leaves any other tool's hooks alone.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================= CTA ============================= -->
     <section aria-labelledby="cta-heading">
       <div class="wrap">
@@ -2151,6 +3185,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
       <ul class="footer-links">
         <li><a href="https://github.com/Tiwari1999/Agent-Island" data-testid="footer-source-link">Source</a></li>
         <li><a href="https://github.com/Tiwari1999/Agent-Island/issues" data-testid="footer-issues-link">Issues</a></li>
+        <li><a href="/privacy/" data-testid="footer-privacy-link">Privacy</a></li>
       </ul>
       <span data-testid="footer-platform">requires macOS 14 or later</span>
     </div>
@@ -2228,11 +3263,34 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         dots.forEach(function (d) {
           d.classList.toggle('active', d.getAttribute('data-goto') === String(n));
         });
+        moveRail();
         // The words move with the panel, so what is on screen is always named.
         says.forEach(function (s) {
           s.classList.toggle('on', s.getAttribute('data-for') === String(n));
         });
       }
+
+      // The rail slides under whichever tab is active, so the five read as one
+      // control rather than five separate chips.
+      var tabsBox = document.querySelector('.panel-tabs');
+      var rail = null;
+      if (tabsBox) {
+        rail = document.createElement('span');
+        rail.className = 'tab-rail';
+        rail.setAttribute('aria-hidden', 'true');
+        tabsBox.appendChild(rail);
+        tabsBox.classList.add('playing');       // the autoplay bar, until a click
+      }
+      function moveRail() {
+        if (!rail || !tabsBox) return;
+        var on = tabsBox.querySelector('.ptab.active');
+        if (!on) return;
+        var r = tabsBox.getBoundingClientRect(), b = on.getBoundingClientRect();
+        rail.style.width = b.width + 'px';
+        rail.style.transform = 'translateX(' + (b.left - r.left) + 'px)';
+      }
+      // A resize moves the tabs under the rail, so it has to be re-measured.
+      window.addEventListener('resize', moveRail);
       function schedule() {
         if (reduced) return;
         clearInterval(timer);
@@ -2240,7 +3298,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         timer = setInterval(function () {
           var i = ORDER.indexOf(state);
           go(ORDER[(i + 1) % ORDER.length]);
-        }, 3800);
+        }, 2000);
       }
       // Any interaction inside the panel stops the carousel. The page promises a
       // countdown that never times out under you; the demo must not shift under
@@ -2250,13 +3308,21 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         if (held) return;
         held = true;
         clearInterval(timer);
+        // The bar says "this is rotating on its own". Once the visitor takes
+        // over it would be claiming something untrue.
+        if (tabsBox) tabsBox.classList.remove('playing');
         var note = document.querySelector('.panel-caption');
-        if (note) note.textContent = 'paused — you are driving · click a dot to change state';
+        if (note) note.textContent = 'paused: you are driving · click a dot to change state';
       }
       // Hovering counts too. Without it the first click is spent stopping the
       // carousel rather than pressing what the visitor aimed at: between reading
       // a control and reaching it, the state had already changed underneath.
-      panel.addEventListener('pointerenter', hold);
+      panel.addEventListener('pointerenter', function () {
+        if (!held) clearInterval(timer);
+      });
+      panel.addEventListener('pointerleave', function () {
+        if (!held) schedule();
+      });
       panel.addEventListener('pointerdown', hold);
       panel.addEventListener('focusin', hold);
       panel.addEventListener('keydown', hold);
@@ -2284,14 +3350,75 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         ];
         var vi = 0;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        // Letters resolve left to right instead of the name cross-fading. Two
+        // things keep the headline from moving while they do: the slot is
+        // locked to the widest name, and the scramble draws from narrow
+        // lowercase -- random capitals in Geist run wider than the real word.
+        // Letters spell things: 'Curs' + 'aa' read as a misspelling rather than as
+        // an effect. Block glyphs are unreadable as text, so a half-resolved slot
+        // reads as motion no matter which letters have landed.
+        var POOL = '░▒▓';
+        var run = null;
+
+
+        // Freeze the first line's width at its longest vendor so the centred
+        // headline cannot shift when a short name comes round.
+        function reserveLine() {
+          var line = el.closest('.h1-line');
+          if (!line) return;
+          // Measure on a clone: mutating the live line would flash every
+          // vendor name on screen before the first paint settles.
+          var ghost = line.cloneNode(true);
+          ghost.style.cssText = 'position:absolute;visibility:hidden;width:auto;white-space:nowrap';
+          line.parentNode.appendChild(ghost);
+          var slot = ghost.querySelector('.vend'), w = 0;
+          VENDORS.forEach(function (v) {
+            slot.textContent = v[0];
+            w = Math.max(w, ghost.getBoundingClientRect().width);
+          });
+          ghost.remove();
+          line.style.setProperty('--line-w', Math.ceil(w) + 'px');
+        }
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(reserveLine);
+        reserveLine();
+
+        function scramble(word, colour) {
+          if (run) clearInterval(run);
+          el.style.setProperty('--vend', colour);
+          var chars = word.split('');
+          // Per-character widths of the SETTLED word, measured in the headline's
+          // own face. Each slot keeps this width for the whole resolve.
+          var probe = document.createElement('span');
+          probe.className = 'vend';
+          probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;min-width:0;max-width:none';
+          el.parentNode.appendChild(probe);
+          var widths = chars.map(function (c) {
+            probe.textContent = c === '\u00a0' ? ' ' : c;
+            return probe.getBoundingClientRect().width;
+          });
+          probe.remove();
+          // 3-frame lead-in of pure shimmer, then one letter every ~2 frames.
+          // Short names get a floor so "Codex" does not finish before it starts.
+          var settle = chars.map(function (_, i) { return 3 + Math.round(i * 1.8); });
+          var f = 0, total = Math.max.apply(null, settle) + 1;
+          run = setInterval(function () {
+            el.innerHTML = chars.map(function (c, i) {
+              var w = ' style="--w:' + widths[i].toFixed(2) + 'px"';
+              if (c === '\u00a0') return '<span class="ch"' + w + '>&nbsp;</span>';
+              if (f >= settle[i]) return '<span class="ch"' + w + '>' + c + '</span>';
+              return '<span class="ch raw"' + w + '>' + POOL[Math.floor(Math.random() * POOL.length)] + '</span>';
+            }).join('');
+            if (++f > total) { clearInterval(run); run = null; }
+          }, 42);
+        }
+
+        scramble(VENDORS[0][0], VENDORS[0][1]);
         setInterval(function () {
           vi = (vi + 1) % VENDORS.length;
-          el.classList.remove('swap');
-          void el.offsetWidth;                 // restart the animation
-          el.textContent = VENDORS[vi][0];
-          el.style.setProperty('--vend', VENDORS[vi][1]);
-          el.classList.add('swap');
-        }, 1500);
+          scramble(VENDORS[vi][0], VENDORS[vi][1]);
+        }, 3400);
+        el.addEventListener('pointerenter', function () { scramble(VENDORS[vi][0], VENDORS[vi][1]); });
       })();
 
       // ---- the demo is a demo: make every control in it actually respond ----
@@ -2312,7 +3439,7 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
             if (answered) {
               var lab = o.querySelector('.q-lab');
               answered.textContent = 'sent · "' + (lab ? lab.textContent.trim() : o.textContent.trim())
-                + '" — the turn goes back to the agent';
+                + '". The turn goes back to the agent';
             }
           });
         });
@@ -2402,6 +3529,174 @@ The test pins rustls 0.22; CI resolves 0.23.</pre>
         schedule();
       }
     })();
+  </script>
+
+  <script>
+  /* Scroll reveal. Nothing here is required to read the page: elements are
+     only hidden after we have confirmed we can observe them, so a failed
+     script or a blocked IntersectionObserver leaves everything visible. */
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+
+    // The hero panel and the desk mock run their own state machine and
+    // transforms; wrapping them in another transform fights it.
+    var SKIP = '#agent-panel, .panel-shell, .desk, .term, .notch, video';
+
+    var targets = [];
+    document.querySelectorAll('section').forEach(function (sec) {
+      var kids = sec.querySelector('.wrap') ? sec.querySelector('.wrap').children : sec.children;
+      Array.prototype.forEach.call(kids, function (el) {
+        if (el.closest(SKIP) || el.querySelector(SKIP)) return;
+        if (el.classList.contains('skip-link')) return;
+        targets.push(el);
+      });
+    });
+    if (!targets.length) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
+
+    targets.forEach(function (el, i) {
+      el.classList.add('rv');
+      // Stagger only within a section, so a long page never waits on a count.
+      el.style.setProperty('--rv-d', ((i % 6) * 55) + 'ms');
+      io.observe(el);
+    });
+
+    // A tall block can sit on screen without ever crossing the first
+    // observer's threshold. A second observer at threshold 0 catches exactly
+    // that case, so no scroll listener is needed.
+    var safety = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+        safety.unobserve(e.target);
+      });
+    }, { threshold: 0 });
+    targets.forEach(function (el) { safety.observe(el); });
+  })();
+  </script>
+  <script>
+  /* The nav hairline appears only once content has scrolled beneath it. */
+  (function () {
+    var h = document.querySelector('header');
+    if (!h || !('IntersectionObserver' in window)) return;
+    // A sentinel 40px tall at the very top: once it leaves the viewport the
+    // page has scrolled under the nav, which is exactly the cue we want.
+    var probe = document.createElement('div');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:40px;pointer-events:none;';
+    document.body.prepend(probe);
+    new IntersectionObserver(function (entries) {
+      h.classList.toggle('stuck', !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(probe);
+  })();
+  </script>
+
+  <script>
+  /* Parallax, pointer-tracked card sheen, and counters that animate from zero
+     when they scroll into view. All transform/opacity only, all gated on
+     reduced motion, and none of it is required to read the page. */
+  (function () {
+    var reduce = window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* --- Cards track the pointer so the sheen follows the cursor. This is a
+       cheap custom-property write, not a layout read, so it stays on the
+       compositor. --- */
+    document.querySelectorAll('.lead-cap').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+    });
+
+    /* --- Hero parallax. The stage and the copy move by different amounts so
+       they separate in depth; a few pixels is the whole effect. A pointer
+       that cannot hover (touch) gets nothing. --- */
+    var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!reduce && fine) {
+      var stage = document.querySelector('.hero-stage');
+      var copy  = document.querySelector('.hero-copy');
+      var hero  = document.querySelector('.hero');
+      if (hero && (stage || copy)) {
+        var queued = false, px = 0, py = 0;
+        hero.addEventListener('pointermove', function (e) {
+          px = (e.clientX / window.innerWidth  - 0.5);
+          py = (e.clientY / window.innerHeight - 0.5);
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(function () {
+            queued = false;
+            if (stage) stage.style.transform =
+              'translate3d(' + (px * -14).toFixed(2) + 'px,' + (py * -9).toFixed(2) + 'px,0)';
+            if (copy) copy.style.transform =
+              'translate3d(' + (px * 6).toFixed(2) + 'px,' + (py * 4).toFixed(2) + 'px,0)';
+          });
+        });
+        hero.addEventListener('pointerleave', function () {
+          if (stage) stage.style.transform = '';
+          if (copy) copy.style.transform = '';
+        });
+      }
+    }
+
+    /* --- Counters. The markup already holds the final text, so with JS off
+       or reduced motion on, the right number is simply there. --- */
+    var counters = [].slice.call(document.querySelectorAll('[data-count]'));
+    if (counters.length && !reduce && 'IntersectionObserver' in window) {
+      var cio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var el = en.target;
+          cio.unobserve(el);
+          var to = parseFloat(el.getAttribute('data-count'));
+          if (isNaN(to)) return;
+          var suffix = el.getAttribute('data-suffix') || '';
+          var dur = 900, t0 = performance.now();
+          (function tick(now) {
+            var k = Math.min(1, (now - t0) / dur);
+            var e = 1 - Math.pow(1 - k, 3);           // ease-out cubic
+            el.textContent = Math.round(to * e) + suffix;
+            if (k < 1) requestAnimationFrame(tick);
+            else el.textContent = to + suffix;
+          })(t0);
+        });
+      }, { threshold: 0.6 });
+      counters.forEach(function (el) { cio.observe(el); });
+    }
+  })();
+  </script>
+
+  <script>
+  /* The centred play button. The video carries no `controls` until it starts,
+     so the poster stays clean; once playing the browser's own controls appear
+     and the overlay gets out of the way. */
+  (function () {
+    var wrap = document.querySelector('.video-wrap');
+    if (!wrap) return;
+    var vid = wrap.querySelector('video');
+    var btn = wrap.querySelector('.video-play');
+    if (!vid || !btn) return;
+
+    btn.addEventListener('click', function () {
+      vid.controls = true;
+      var p = vid.play();
+      // Older Safari returns undefined rather than a promise.
+      if (p && p.catch) p.catch(function () { wrap.dataset.state = 'idle'; vid.controls = true; });
+    });
+    vid.addEventListener('play',  function () { wrap.dataset.state = 'playing'; });
+    // Coming back to the poster should offer the button again.
+    vid.addEventListener('ended', function () { wrap.dataset.state = 'idle'; });
+  })();
   </script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+# Agent Island — https://agentisland.in
+#
+# One page, nothing private, nothing behind a login. The only rules here are
+# the ones that matter: let crawlers in, and point them at the sitemap.
+
+User-agent: *
+Allow: /
+
+# Nothing here serves a page, so there is no reason to spend crawl budget on it.
+Disallow: /assets/
+
+Sitemap: https://agentisland.in/sitemap.xml
