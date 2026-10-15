@@ -169,10 +169,18 @@ The rest are link farms and are not worth the form-filling.
 
 These are plain GitHub pull requests, no signup, and they keep paying out:
 
-- `awesome-mac` — the big one for macOS apps
-- `awesome-claude-code` — directly your audience
-- `awesome-macos-command-line`
-- `awesome-swift` — if you frame it as a Swift/AppKit app
+Checked all four on 15 Oct 2026. Only one was actually actionable:
+
+| List | State | Action |
+|---|---|---|
+| `awesome-mac` | **PR open** | [#3493](https://github.com/jaywcjlove/awesome-mac/pull/3493) — the list already had an "Agent Island" entry pointing at `tristan666666/agent-island`, which is **deleted** (repo and user both 404). The PR repoints it at the live project. |
+| `awesome-claude-code` | **Blocked** | Issues are restricted to collaborators ("An owner of this repository has limited the ability to create an issue"). Submissions were still landing on 15 Oct (#3173–3175), so this looks temporary — retry in a few days. Note it takes an **issue form**, not a PR; a PR risks an interaction ban. Agent Island passes the bar (14+ days of active development). |
+| `awesome-macos-command-line` | **Dead** | `archived: true`, last push 4 Mar 2026. Accepts nothing. Also a CLI list — a GUI app does not belong. |
+| `awesome-swift` | **Poor fit** | Sections are Libs, Patterns, Dependency Managers, Boilerplates. No section for shipped apps. |
+
+For `awesome-claude-code` when it reopens: category
+`Observability & Monitoring > Session Monitors`, and the draft is in the session
+scratchpad. Be aware the form's final checkbox is a trap — leave it unchecked.
 
 One line each, something like:
 
