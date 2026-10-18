@@ -8,7 +8,7 @@ Facts used in the copy, all verified against the repo on 2026-10-15:
 | | |
 |---|---|
 | Agents | Claude Code, Codex, Cursor, Gemini CLI, OpenCode |
-| Terminals it can jump to | 6 (tmux, Warp, iTerm2, Terminal.app, kitty, WezTerm) |
+| Terminals it can jump to | 8 (tmux, Warp, iTerm2, Terminal.app, kitty, WezTerm, Ghostty, cmux) |
 | Requires | macOS 14+ |
 | Licence | MIT |
 | Cost | free |
