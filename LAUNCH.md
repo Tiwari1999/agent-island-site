@@ -194,6 +194,38 @@ Match the badge style each list already uses or the PR gets closed.
 
 ---
 
+## 3b. Distribution status (22 Oct 2026)
+
+| Target | State | Next action |
+|---|---|---|
+| `awesome-mac` [#3493](https://github.com/jaywcjlove/awesome-mac/pull/3493) | Open, no response | Wait. Replaces a dead link, so it should land. |
+| `open-source-mac-os-apps` [#1672](https://github.com/serhii-londar/open-source-mac-os-apps/pull/1672) | Open, no response | Wait. |
+| `iCHAIT/awesome-macOS` | **Branch pushed, PR not opened** | One click: https://github.com/iCHAIT/awesome-macOS/compare/master...Tiwari1999:add-agent-island?expand=1 — the API returned 404 on PR creation from the CLI token, though the repo accepts PRs from others. |
+| `awesome-claude-code` | Blocked | Issues restricted to collaborators. Re-check periodically. |
+| `awesome-macos-command-line` | Dead | Archived. |
+| `awesome-swift` | Poor fit | No section for apps. |
+
+### Sites that need you signed in
+
+Claude cannot create accounts or sign in, including via Google SSO. Once you
+are logged in to these in Chrome, the submissions themselves can be automated:
+
+- dev.to, Indie Hackers, SaaSHub, AlternativeTo, BetaList, Slant
+
+### Sites that are unreachable regardless
+
+- **Reddit** — blocked for Claude's browser tool *and* 403 server-side. Posts
+  must be pasted by you; drafts are in the session scratchpad.
+- **Lobsters** — invite only.
+
+### Why this matters more than more directories
+
+AI engines corroborate a brand against off-site mentions (Reddit, HN, reviews,
+editorial). The domain is 20 days old with 1 GitHub star and zero merged
+listings, which is why models call it untrusted. A long tail of low-traffic
+directory listings does not fix that, and can read as link spam. HN and Reddit
+mentions do.
+
 ## 4. Before you post anywhere else
 
 Two things will cost you installs from every post above.
